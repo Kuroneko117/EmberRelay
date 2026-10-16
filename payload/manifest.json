@@ -1,0 +1,17 @@
+{
+  "art_sha256": "e78becf110c0cac3e74337261dc15deb46c256506365da81b5d3bc396366f810",
+  "music": [
+    {
+      "target": "assets/music/last-light.ogg",
+      "source": "https://opengameart.org/sites/default/files/warped-files_1.zip",
+      "archive_path": "warped-files/Sound/platformer_level04_loop.ogg",
+      "sha256": "3d092d4a6b7992443a1aa7aa3e8ef5279daf526a8f491c5b4a231c59cddf1192"
+    },
+    {
+      "target": "assets/music/skywater.ogg",
+      "source": "https://opengameart.org/sites/default/files/warped_city_files.zip",
+      "archive_path": "warped city files/demo/assets/sounds/sci_fi_platformer02.ogg",
+      "sha256": "310a49281df222c447c0f61b8a0d866ab14eba74c492a6d530c10ca698c0bc7b"
+    }
+  ]
+}

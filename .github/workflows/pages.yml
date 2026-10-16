@@ -1,0 +1,47 @@
+name: Publish Ember Relay
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/ci_prepare_web.py
+      - run: python tools/prepare_web_templates.py
+      - name: Install matching Godot editor
+        run: |
+          curl -fL --retry 3 https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip -o build/godot.zip
+          unzip -q build/godot.zip -d build/engine
+          chmod +x build/engine/Godot_v4.7.2-stable_linux.x86_64
+      - name: Export browser game
+        run: |
+          mkdir -p build/web/play
+          build/engine/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit
+          build/engine/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --export-release Web build/web/play/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish game
+        id: deployment
+        uses: actions/deploy-pages@v4
+

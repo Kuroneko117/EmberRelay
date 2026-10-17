@@ -1,0 +1,9 @@
+Sci Fi Inventory — Adam Saltsman
+Official source: https://adamatomic.itch.io/sci-fi-inventory
+
+The original artist releases these assets into the public domain and explicitly permits use in personal and commercial projects.
+The original release page snapshot and downloaded artwork are retained in the source project at assets/source/saltsman-inventory/.
+
+Used in Ember Relay: nine pixel item icons for module rewards, maintenance, HUD resources and selected pickups.
+Edits: steel/copper/teal palette mapping and transparent 24x24 canvas normalization. Original silhouettes and alpha pixels are preserved.
+These are third-party asset acknowledgments, separate from the game's primary creator credits.

@@ -5,18 +5,42 @@ const AMBER = Color("ffbd77")
 const RED = Color("ef6b70")
 const FONT = preload("res://assets/ui_font.ttc")
 var game: Node
-var combo: int = 0
+var combo: int = 0:
+	set(value):
+		if combo==value: return
+		combo = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var combo_time: float = 0
-var focus: float = 0
-var potions: int = 2
+var focus: float = 0:
+	set(value):
+		if focus==value: return
+		focus = value
+		if is_instance_valid(game): game.stats_changed.emit()
+var potions: int = 2:
+	set(value):
+		if potions==value: return
+		potions = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var rings: Array[Dictionary] = []
 var chests: Array[Dictionary] = []
 var arenas: Array[Dictionary] = []
 var arena_members: Array[Node] = []
-var active_arena: int = -1
-var wave: int = 0
+var active_arena: int = -1:
+	set(value):
+		if active_arena==value: return
+		active_arena = value
+		if is_instance_valid(game): game.stats_changed.emit()
+var wave: int = 0:
+	set(value):
+		if wave==value: return
+		wave = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var wave_delay: float = 0
-var cleared: int = 0
+var cleared: int = 0:
+	set(value):
+		if cleared==value: return
+		cleared = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var radio: String = ""
 var radio_time: float = 0
 var boss_intro: float = 0
@@ -70,8 +94,8 @@ func configure() -> void:
 	say(["这里是灯塔。信使，你脚下的路已经沉寂了很久。把火种带回来。",
 		"管廊还有备用电力。留意蒸汽喷口，别让守卫截住你。",
 		"那台机器的装甲仍然完整。等它的锤臂落下，再攻击暴露的炉心。",
-		"苍穹水库曾让整座城免受暴雨。启动船坞供电，沿高架寻找风暴源。",
-		"两座信标都需要重新校准。高处有路；先解除守卫封锁，再攀上去。",
+		"先启动船坞入口地面的 P 号供电箱，靠近按 E。目标方向在右上角，C 打开区域地图。",
+		"信标 1 在旧站台，信标 2 在右侧天线台。按 C 查看标记；跳上平台，靠近按 E。",
 		"风暴织机还在等待投递。看清落雷，再抓住它俯冲落地的空隙。"][game.chapter])
 	queue_redraw()
 
@@ -237,6 +261,7 @@ func reset_encounter() -> void:
 func say(message: String) -> void:
 	radio = message
 	radio_time = 7
+	game.radio_received.emit(message)
 
 func ring(pos: Vector2, color: Color, radius: float) -> void:
 	rings.append({"pos":pos,"color":color,"radius":radius,"life":0.55})
@@ -500,4 +525,3 @@ func draw_hud(h: Node2D) -> void:
 		var line2: String = radio.substr(29)
 		h._text(line1,Vector2(167,308),10)
 		h._text(line2,Vector2(167,321),10)
-

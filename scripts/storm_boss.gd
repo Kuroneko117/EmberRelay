@@ -1,13 +1,18 @@
 extends CharacterBody2D
 ## The Storm Loom: aerial pressure, telegraphed lightning and grounded counterattack windows.
-const ART = preload("res://scripts/art.gd")
+const VISUAL = preload("res://scripts/enemy_visual.gd")
+var visual: AnimatedSprite2D
+var satellites: Array[AnimatedSprite2D] = []
 const TEAL = Color("70dfd9")
 const GOLD = Color("f5c384")
 const RED = Color("ed6d83")
 var game: Node
 var kind: String = "tempest"
 var max_health: float = 176
-var health: float = 176
+var health: float = 176:
+	set(value):
+		health = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var dead: bool = false
 var facing: int = -1
 var phase: int = 1
@@ -30,6 +35,9 @@ var shots_left: int = 0
 var shot_timer: float = 0
 var dive_direction: float = -1
 
+func combat_size() -> Vector2:
+	return Vector2(54,48)
+
 func setup(_type: String,where: Vector2,owner_game: Node) -> void:
 	game = owner_game
 	position = where
@@ -47,9 +55,25 @@ func _ready() -> void:
 	c.position = Vector2(0,-25)
 	c.shape = shape
 	add_child(c)
+	visual = VISUAL.new()
+	visual.configure(self,"tempest")
+	add_child(visual)
+	for i: int in range(4):
+		var satellite: AnimatedSprite2D = AnimatedSprite2D.new()
+		satellite.sprite_frames = VISUAL.frames_for("drone")
+		satellite.offset = Vector2(0,-24)
+		satellite.scale = Vector2.ONE*0.45
+		satellite.play("move")
+		satellite.position = Vector2.from_angle(i*TAU/4)*43+Vector2(0,-24)
+		add_child(satellite)
+		satellites.append(satellite)
 
 func _physics_process(delta: float) -> void:
 	age += delta
+	for i: int in range(satellites.size()):
+		satellites[i].position = Vector2.from_angle(i*TAU/4+sin(age*0.7)*0.14)*43+Vector2(0,-24)
+		satellites[i].modulate = Color("f3b17b") if phase==3 else Color.WHITE
+		satellites[i].visible = not dead
 	flash = maxf(0,flash-delta)
 	phase_pulse = maxf(0,phase_pulse-delta)
 	queue_redraw()
@@ -158,11 +182,15 @@ func hurt(amount: float,knock: Vector2=Vector2.ZERO) -> void:
 	if health<=0:
 		dead = true
 		lightning.clear()
+		for satellite: AnimatedSprite2D in satellites: satellite.hide()
 		game.presentation.death_effect(position-Vector2(0,25),true)
 		game.on_enemy_killed(self)
-		queue_free()
+		set_physics_process(false)
+		set_deferred("collision_layer",0)
+		get_child(0).set_deferred("disabled",true)
 
 func _draw() -> void:
+	if dead: return
 	var center: Vector2 = Vector2(0,-26)
 	var glow: Color = RED if phase==3 else TEAL
 	for bolt: Dictionary in lightning:
@@ -178,29 +206,7 @@ func _draw() -> void:
 			draw_line(Vector2(x,285-position.y),Vector2(x,273-position.y),glow,2)
 	if mode=="warning" and attack_kind=="dive":
 		draw_rect(Rect2(minf(0,dive_direction*340),285-position.y,340,9),Color(glow,0.18))
-	for i: int in range(4):
-		var angle: float = i*TAU/4+sin(age*0.7)*0.14
-		var root_p: Vector2 = center+Vector2.from_angle(angle)*24
-		var tip: Vector2 = center+Vector2.from_angle(angle+sin(age*2+i)*0.12)*(51+sin(age*3+i)*4)
-		draw_line(root_p,tip,Color("101d2b"),9)
-		draw_line(root_p,tip,Color("789b9d"),4)
-		draw_circle(tip,7,Color("172935"))
-		draw_arc(tip,6,0,TAU,12,glow,2)
-		draw_line(tip,tip+Vector2.from_angle(angle)*10,GOLD,2)
-	draw_circle(center,31,Color("101e2b"))
-	draw_arc(center,29,age*.3,age*.3+TAU,32,Color("6d9498"),3)
-	for i: int in range(12):
-		var angle: float = age*(0.45+phase*0.12)+i*TAU/12
-		var p: Vector2 = center+Vector2.from_angle(angle)*27
-		draw_line(p,p+Vector2.from_angle(angle)*6,Color("c0bda1"),3)
-	ART.stamp(self,Rect2(80,0,16,16),Rect2(-22,-49,44,44),Color("b3c7bd") if flash<=0 else Color.WHITE)
-	draw_circle(center,18,Color("152936"))
-	draw_circle(center,13,Color("315d65") if mode=="recovery" else Color("1d414f"))
-	draw_arc(center,16,-age*2,-age*2+4.8,24,glow,2)
-	draw_colored_polygon(PackedVector2Array([center+Vector2(0,-11),center+Vector2(9,0),center+Vector2(0,11),center+Vector2(-9,0)]),GOLD if mode=="recovery" else glow)
-	draw_rect(Rect2(-2,-30,4,8),Color("f6f0d0"))
-	for i: int in range(3):
-		draw_rect(Rect2(-20+i*19,10,3,7+sin(age*13+i)*3),Color(glow,0.65))
 	if mode=="warning":
-		draw_arc(center,66,-PI/2,-PI/2+TAU*(1-timer/warning_time),40,Color(glow,0.8),2)
-
+		draw_arc(center,61,-PI/2,-PI/2+TAU*(1-timer/warning_time),40,Color(glow,0.75),1)
+	if mode=="recovery":
+		for i: int in range(4): draw_rect(Rect2(-12+i*8,-68-sin(age*4+i)*3,2,2),GOLD)

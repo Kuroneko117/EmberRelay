@@ -1,15 +1,17 @@
-# 余烬信使 · 长路 / Ember Relay 4.0
+# 余烬信使 · 寻光 / Ember Relay 5.1
 
-**[点击在线试玩](https://kuroneko117.github.io/EmberRelay/)**
+**在线试玩：[余烬信使](https://kuroneko117.github.io/EmberRelay/)**
 
-两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。无需安装，建议使用电脑上的 Edge、Chrome 或 Firefox。
+**主要创作人：赤木** · 创意方向与制作统筹。
 
 ![工业遗迹中的余烬航线](https://kuroneko117.github.io/EmberRelay/assets/cover.png)
 
-点击页面中的「开始旅程」，加载后点击游戏画面获取操作焦点。AD 移动，空格二段跳，J 连斩，K 射击，Shift 冲刺，Q 弹反，F 修复，E 交互，Tab 地图，Esc 暂停。
+两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。新增区域目标指引与像素道具界面。
 
-进度保存在当前浏览器，刷新后可以继续。网页版与桌面版存档独立；无痕模式或清除站点数据可能使浏览器进度丢失。
+本仓库由 GitHub Actions 构建浏览器试玩版。首次发布请在 Settings → Pages → Source 选择 GitHub Actions。在线试玩链接显示在 Actions 部署结果与 Deployments 中。
 
-本仓库通过 GitHub Actions 自动构建并发布至 GitHub Pages。更新 main 分支后会自动部署；构建与部署结果见 Actions。
+操作：AD 移动，空格二段跳，J 连斩，K 射击，Shift 冲刺，Q 弹反，F 修复，E 交互，C 区域地图，Tab 世界地图，Esc 暂停。攻击可收起通讯。建议使用电脑。
 
-素材来源、改动和许可见 licenses/。主程序与关卡内容保留原作者权利；第三方素材遵循各自许可。仓库不包含玩家存档、个人记录和电脑字体。
+主创署名由 credits.cfg 提供。第三方素材仅列在素材致谢，来源、改动和许可见 licenses/。主程序与关卡内容保留项目主创权利；第三方素材遵循各自许可。仓库不含玩家存档、个人记录和电脑字体。
+
+点击「开始旅程」，加载后点击游戏画面获取操作焦点。进度保存在当前浏览器，刷新后可以继续。网页版与桌面版存档独立；无痕模式或清除站点数据可能使浏览器进度丢失。

@@ -5,8 +5,16 @@ const COURIER = preload("res://scripts/courier_art.gd")
 var game: Node
 var facing: int = 1
 var max_health: int = 6
-var health: int = 6
-var energy: float = 100.0
+var health: int = 6:
+	set(value):
+		if health==value: return
+		health = value
+		if is_instance_valid(game): game.stats_changed.emit()
+var energy: float = 100.0:
+	set(value):
+		if energy==value: return
+		energy = value
+		if is_instance_valid(game): game.stats_changed.emit()
 var invulnerable: float = 0.0
 var dash_cooldown: float = 0.0
 var dead: bool = false
@@ -371,4 +379,3 @@ func _draw_slash() -> void:
 	var tip: Vector2 = center + Vector2(cos(angle), sin(angle)) * (radius - 3.0)
 	draw_line(center, tip.round(), IVORY, 3.0, false)
 	draw_line(center, tip.round(), LIGHT, 1.0, false)
-

@@ -10,43 +10,10 @@ const MUTED = Color("96a8a8")
 const DARK = Color("14232c")
 var game: Node
 
-func _process(_delta: float) -> void:
-	if not is_instance_valid(game): return
-	var hovered: bool = false
-	for item: Dictionary in game.get_buttons():
-		if item.rect.has_point(get_local_mouse_position()): hovered = true
-	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND if hovered else Input.CURSOR_ARROW)
 
 func _draw() -> void:
 	if not is_instance_valid(game): return
-	match game.state:
-		"menu":
-			_menu()
-			if game.menu_help: _help()
-		"world_map": game.campaign.draw_atlas(self)
-		"playing": _gameplay()
-		"paused":
-			_gameplay()
-			_overlay()
-			_panel(Rect2(176,73,288,222))
-			_center("TAKE A BREATH",107,11,TEAL)
-			_center("让火种歇一会儿",147,24,CREAM)
-			_center("中继站与封锁解除后会自动存档。",173,10,MUTED)
-		"dead":
-			_gameplay()
-			_overlay()
-			_panel(Rect2(165,65,310,243))
-			_flame(Vector2(320,101),2,Color("bd7c63"))
-			_center("火种尚未熄灭",153,25,CREAM)
-			_center("从最近的中继站重新出发。",179,12,MUTED)
-		"upgrade": _upgrade()
-		"victory": _victory()
-	game.director.draw_hud(self)
-	if game.state!="menu":
-		for button: Dictionary in game.get_buttons():
-			_button(button)
-	if game.state=="upgrade":
-		_upgrade_cards()
+	if game.state=="menu": _menu()
 	if game.damage_flash>0 and game.state=="playing":
 		draw_rect(Rect2(0,0,640,360),Color(0.9,0.3,0.22,game.damage_flash*0.28))
 		draw_rect(Rect2(0,0,640,360),Color(0.9,0.3,0.22,game.damage_flash),false,3)
@@ -94,13 +61,6 @@ func _menu() -> void:
 	for i: int in range(32):
 		draw_rect(Rect2(i*11,0,11,360),Color(0.035,0.07,0.1,0.98-float(i)*0.024))
 	draw_rect(Rect2(0,331,640,29),Color(0.035,0.07,0.1,0.93))
-	_flame(Vector2(43,28),0.8)
-	_tracked("THE LONG ROAD / 04",Vector2(61,32),9,TEAL,2)
-	_text("余烬信使",Vector2(34,103),39,CREAM)
-	_tracked("EMBER RELAY",Vector2(39,131),17,AMBER,3.6)
-	draw_line(Vector2(40,153),Vector2(86,153),AMBER,2)
-	_text("长夜将至，送最后一束光回家。",Vector2(39,180),12,CREAM)
-	_text("双章航线 · 六处遗迹 · 两位独立首领",Vector2(39,201),10,MUTED)
 	# Foreground girder and hand-painted pixels frame the character at four times game scale.
 	ART.tile_strip(self,Rect2(0,128,64,16),Vector2(351,306),289,33,Color("b1aa95"))
 	ART.tile_strip(self,Rect2(288,0,64,16),Vector2(342,335),298,28,Color("7a837f"))
@@ -120,11 +80,6 @@ func _menu() -> void:
 	draw_circle(Vector2(585,154),21,Color(0.8,0.57,0.3,0.07))
 	draw_rect(Rect2(580,149,9,12),AMBER)
 	draw_rect(Rect2(582,151,4,8),CREAM)
-	_text("信使 07  /  更远的黎明",Vector2(389,324),9,CREAM)
-	_text("F11 全屏     ↑ ↓ 选择 / ENTER 确认",Vector2(24,350),8,MUTED)
-	_text("THE LONG ROAD  4.0",Vector2(289,350),8,TEAL)
-	if game.best_score>0: _text("最高记录 %06d"%game.best_score,Vector2(496,27),9,TEAL)
-	else: _text("灯塔信号 · 在线",Vector2(526,27),9,TEAL)
 
 func _help() -> void:
 	_overlay()
@@ -265,4 +220,3 @@ func _button(button: Dictionary) -> void:
 		draw_rect(Rect2(rect.position,Vector2(rect.size.x,3)),AMBER)
 	if button.label!="":
 		_center(button.label,rect.position.y+rect.size.y/2+4,11 if rect.size.y>25 else 9,DARK if primary else CREAM,rect.get_center().x)
-

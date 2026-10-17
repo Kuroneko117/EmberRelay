@@ -5,8 +5,13 @@ const CREAM = Color("eee5cd")
 const TEAL = Color("79d8cc")
 const AMBER = Color("efb473")
 var game: Node
+var local_return: String = "world_map"
 var unlocked: int = 0
-var selected: int = 0
+signal selection_changed
+var selected: int = 0:
+	set(value):
+		selected = value
+		selection_changed.emit()
 var completed: Array[int] = []
 var visited: Array[int] = []
 var sector_states: Dictionary = {}
@@ -167,8 +172,10 @@ func action(value: String) -> void:
 			var destination: int = selected*3
 			if is_instance_valid(game.player) and game.chapter/3==selected and not game.boss_defeated: destination = game.chapter
 			travel_to(destination)
-		"local_map": game.state = "journal"
-		"local_back": game.state = "world_map"
+		"local_map":
+			local_return = game.state
+			game.state = "journal"
+		"local_back": game.state = local_return
 	if value.begins_with("route_"):
 		var destination: int = int(value.trim_prefix("route_"))
 		if visited.has(destination) or destination==selected*3: travel_to(destination)
@@ -235,4 +242,3 @@ func draw_atlas(h: Node2D) -> void:
 	h._text("1 / 2 选择章节 · ENTER 出发 · 点击已探索节点可返回",Vector2(244,345),8,Color("8fa9ab"))
 	if game.best_score>0 and not completed.has(0): h._text("旧版通关记录已识别，第二章可直接进入",Vector2(243,92),9,TEAL)
 	if game.notice_timer>0: h._text(game.notice,Vector2(244,292),8,AMBER)
-

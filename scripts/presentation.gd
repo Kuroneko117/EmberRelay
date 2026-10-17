@@ -132,6 +132,7 @@ func tick(_delta: float) -> void:
 			game.director.save_campaign()
 		game.audio.play_sfx("checkpoint")
 		game.director.ring(mechanism-Vector2(0,26),Color("7be3cf"),75)
+		game.stats_changed.emit()
 	for bird: Dictionary in birds:
 		if not bird.flying and absf(bird.pos.x-game.player.position.x)<65:
 			bird.flying = true
@@ -180,6 +181,7 @@ func restore(data: Dictionary) -> void:
 func _draw() -> void:
 	if game.state=="menu" or not is_instance_valid(game.player): return
 	_draw_mechanism()
+	_draw_route_markers()
 	for crate: Dictionary in crates:
 		if absf(crate.pos.x-game.camera.position.x)>355: continue
 		if crate.broken:
@@ -263,7 +265,7 @@ func _activate_new_mechanism() -> void:
 		for relay: Dictionary in relays:
 			if relay.on: count += 1
 		circuit_on = count==2
-		game.director.say("高架信标校准 %d / 2。两座都接通后，前往右侧的风暴观测站。"%count)
+		game.director.say("信标 %d / 2 已接通。"%count+("向右穿过中继门，进入风暴之眼。" if circuit_on else "下一座信标已标在区域地图，按 C 查看。"))
 	elif not circuit_on:
 		circuit_on = true
 		if game.chapter==3:
@@ -274,6 +276,26 @@ func _activate_new_mechanism() -> void:
 			game.director.say("备用电池接入，积蓄余烬 +30。风暴的中心就在前方。")
 		game.embers += 3
 	game.director.save_campaign()
+	game.stats_changed.emit()
+
+func _draw_route_markers() -> void:
+	if not is_instance_valid(game.guide): return
+	for device: Dictionary in game.guide.devices():
+		var p: Vector2 = device.pos-Vector2(0,82 if game.chapter==4 else 68)
+		var col: Color = Color("83c8bc") if device.on else Color("ecb371")
+		draw_line(p+Vector2(0,15),device.pos-Vector2(0,34),Color(col,0.35),1)
+		draw_rect(Rect2(p-Vector2(13,10),Vector2(26,21)),Color("0c1d26"))
+		draw_rect(Rect2(p-Vector2(13,10),Vector2(26,21)),Color(col,0.7),false,1)
+		draw_string(FONT,p+Vector2(-5,5),"✓" if device.on else device.id,HORIZONTAL_ALIGNMENT_LEFT,-1,12,col)
+		if not device.on:
+			var pulse: float = 0.35+sin(time*3.0)*0.18
+			draw_arc(p,18,-2.7,-0.4,14,Color(col,pulse),1)
+	# Put a clear entry sign at each boss threshold, before the encounter locks.
+	if game.campaign.is_boss_sector() and not game.boss_awake and not game.boss_defeated:
+		var p: Vector2 = Vector2(game.campaign.arena_start()-42,192)
+		draw_texture_rect(preload("res://assets/ui/items/beacon.png"),Rect2(p-Vector2(18,22),Vector2(36,36)),false)
+		draw_string(FONT,p+Vector2(-30,20),"守卫区 →",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("ecb371"))
+		draw_string(FONT,p+Vector2(-38,35),"向前进入战斗",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("b3ccc6"))
 
 func _draw_new_mechanism() -> void:
 	if game.chapter==3:
@@ -296,6 +318,6 @@ func _draw_new_mechanism() -> void:
 		if game.player.position.distance_to(p)<55:
 			var label: String = "E 校准信标" if game.chapter==4 else "E 船坞供电" if game.chapter==3 else "E 备用电池"
 			if relay.on: label = "信标已接通" if game.chapter==4 else "能源已接通"
-			draw_rect(Rect2(p-Vector2(48,90 if game.chapter==4 else 58),Vector2(100,19)),Color("111e28"))
-			draw_string(FONT,p-Vector2(43,77 if game.chapter==4 else 45),label,HORIZONTAL_ALIGNMENT_LEFT,-1,10,col)
-
+			var prompt: Vector2 = p+Vector2(-52,8) if game.chapter==4 else p-Vector2(52,48)
+			draw_rect(Rect2(prompt,Vector2(108,19)),Color("111e28"))
+			draw_string(FONT,prompt+Vector2(6,13),label,HORIZONTAL_ALIGNMENT_LEFT,-1,10,col)

@@ -20,8 +20,14 @@ var director: Node2D
 var scenery: Node2D
 var presentation: Node2D
 var menu_ui: Control
+var guide: RefCounted
 var hit_pause: float = 0.0
 var ui_focus: int = 0
+signal stats_changed
+signal sector_changed
+signal notice_shown(message: String)
+signal radio_received(message: String)
+signal messages_dismissed
 signal screen_changed
 signal menu_changed
 var state: String = "menu":
@@ -48,13 +54,33 @@ var lamps: Array[Vector2] = []
 var chapter_kills: int = 0
 var total_kills: int = 0
 var kill_goal: int = 5
-var embers: int = 0
-var relics: int = 0
+var embers: int = 0:
+	set(value):
+		if embers==value: return
+		embers = value
+		stats_changed.emit()
+var relics: int = 0:
+	set(value):
+		if relics==value: return
+		relics = value
+		stats_changed.emit()
 var deaths: int = 0
-var damage_bonus: int = 0
-var pulse_bonus: int = 0
+var damage_bonus: int = 0:
+	set(value):
+		if damage_bonus==value: return
+		damage_bonus = value
+		stats_changed.emit()
+var pulse_bonus: int = 0:
+	set(value):
+		if pulse_bonus==value: return
+		pulse_bonus = value
+		stats_changed.emit()
 var bonus_health: int = 0
-var elapsed: float = 0.0
+var elapsed: float = 0.0:
+	set(value):
+		var changed_second: bool = int(elapsed)!=int(value)
+		elapsed = value
+		if changed_second: stats_changed.emit()
 var clock: float = 0.0
 var level_width: float = 2350.0
 var world_bottom: float = 430.0
@@ -64,8 +90,16 @@ var checkpoint_x: float = 1080
 var safe_position: Vector2 = Vector2(75, 290)
 var portal_x: float = 2240
 var boss: Node
-var boss_awake: bool = false
-var boss_defeated: bool = false
+var boss_awake: bool = false:
+	set(value):
+		if boss_awake==value: return
+		boss_awake = value
+		stats_changed.emit()
+var boss_defeated: bool = false:
+	set(value):
+		if boss_defeated==value: return
+		boss_defeated = value
+		stats_changed.emit()
 var shake: float = 0.0
 var damage_flash: float = 0.0
 var banner_timer: float = 0.0
@@ -122,7 +156,9 @@ func _ready() -> void:
 	presentation = PresentationScript.new()
 	presentation.game = self
 	add_child(presentation)
-	menu_ui = preload("res://scripts/menu_ui.gd").new()
+	guide = preload("res://scripts/route_guide.gd").new()
+	guide.game = self
+	menu_ui = preload("res://scripts/interface.gd").new()
 	menu_ui.game = self
 	ui_layer.add_child(menu_ui)
 	_build_menu_scene()
@@ -143,7 +179,7 @@ func _setup_input() -> void:
 		"jump": [KEY_SPACE, KEY_W, KEY_UP], "attack": [KEY_J],
 		"pulse": [KEY_K], "dash": [KEY_SHIFT, KEY_L],
 		"parry": [KEY_Q], "heal": [KEY_F], "burst": [KEY_R], "down": [KEY_S, KEY_DOWN], "journal": [KEY_TAB],
-		"interact": [KEY_E], "pause_game": [KEY_ESCAPE], "retry": [KEY_R], "mute": [KEY_M]
+		"interact": [KEY_E], "pause_game": [KEY_ESCAPE], "retry": [KEY_R], "mute": [KEY_M], "local_map": [KEY_C]
 	}
 	for action: String in keys:
 		if not InputMap.has_action(action):
@@ -202,6 +238,7 @@ func _clear_world() -> void:
 	player = null
 
 func _load_chapter() -> void:
+	dismiss_messages()
 	_clear_world()
 	chapter_kills = 0
 	checkpoint_active = false
@@ -302,6 +339,7 @@ func _load_chapter() -> void:
 	camera.offset = Vector2.ZERO
 	audio.set_intensity(0.25 + chapter * 0.2)
 	audio.set_region(chapter/3)
+	sector_changed.emit()
 	queue_redraw()
 
 func _spawn_enemy(kind: String, pos: Vector2) -> Node:
@@ -396,7 +434,7 @@ func _physics_process(delta: float) -> void:
 				campaign.travel_to(chapter+1)
 				audio.play_sfx("checkpoint")
 		else:
-			show_notice("先启动本区机关，再解除封锁 %d / %d" % [director.cleared,director.arenas.size()])
+			show_notice(guide.gate_hint())
 
 func gate_open() -> bool:
 	return boss_defeated if campaign.is_boss_sector() else director.cleared>=director.arenas.size() and (chapter<3 or presentation.circuit_on)
@@ -408,7 +446,7 @@ func player_melee(area: Rect2, damage: int, knock: Vector2, combo: int) -> void:
 	for enemy: Node in enemies.duplicate():
 		if not is_instance_valid(enemy) or enemy.dead:
 			continue
-		var size: Vector2 = Vector2(34,54) if enemy.kind in ["boss","tempest"] else Vector2(24,30)
+		var size: Vector2 = enemy.combat_size()
 		var enemy_rect: Rect2 = Rect2(enemy.position-Vector2(size.x*0.5,size.y),size)
 		if area.intersects(enemy_rect):
 			enemy.hurt(damage*(1+0.15*mini(2,damage_bonus)),knock)
@@ -452,7 +490,7 @@ func _update_projectiles(delta: float) -> void:
 			for enemy: Node in enemies.duplicate():
 				if not is_instance_valid(enemy) or enemy.dead:
 					continue
-				var size: Vector2 = Vector2(40,56) if enemy.kind in ["boss","tempest"] else Vector2(28,32)
+				var size: Vector2 = enemy.combat_size()
 				if Rect2(enemy.position-Vector2(size.x*0.5,size.y),size).grow(4).has_point(p.pos):
 					enemy.hurt(p.damage,Vector2(signf(p.vel.x)*170,-60))
 					director.hit()
@@ -512,7 +550,7 @@ func on_enemy_killed(enemy: Node) -> void:
 			_add_pickup(enemy.position+Vector2(14,-15),"heal")
 		audio.play_sfx("kill")
 	enemies.erase(enemy)
-	if not campaign.is_boss_sector() and chapter_kills==kill_goal:
+	if not campaign.is_boss_sector() and chapter_kills==kill_goal and gate_open():
 		show_notice("区域已净化 · 前往右侧中继门，按 E 进入下一区域")
 		audio.play_sfx("checkpoint")
 
@@ -581,59 +619,41 @@ func return_to_menu() -> void:
 	_build_menu_scene()
 
 func _input(event: InputEvent) -> void:
+	# Keep the attack event available to the player after removing the message.
+	if state=="playing" and (event.is_action_pressed("attack") or event.is_action_pressed("pulse")):
+		dismiss_messages()
 	if event is InputEventKey and event.pressed and not event.echo:
-		if state=="world_map":
-			if event.physical_keycode in [KEY_LEFT,KEY_1,KEY_UP]: campaign.selected = 0; return
-			if event.physical_keycode in [KEY_RIGHT,KEY_2,KEY_DOWN]: campaign.selected = 1; return
-			if event.physical_keycode==KEY_ENTER: activate_button("depart"); return
-		var ui_buttons: Array[Dictionary] = get_buttons()
-		if state!="playing" and state!="boss_intro" and state!="menu" and not ui_buttons.is_empty():
-			if event.physical_keycode in [KEY_UP,KEY_W,KEY_DOWN,KEY_S]:
-				ui_focus = posmod(ui_focus+(-1 if event.physical_keycode in [KEY_UP,KEY_W] else 1),ui_buttons.size())
-				audio.play_sfx("click")
-				return
-			if event.physical_keycode==KEY_ENTER:
-				activate_button(ui_buttons[mini(ui_focus,ui_buttons.size()-1)].action)
-				ui_focus = 0
-				return
 		if event.physical_keycode==KEY_F11:
 			var full: bool = DisplayServer.window_get_mode()==DisplayServer.WINDOW_MODE_FULLSCREEN
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if full else DisplayServer.WINDOW_MODE_FULLSCREEN)
+			get_viewport().set_input_as_handled()
+			return
 		if event.is_action_pressed("mute"):
 			muted = not muted
 			audio.set_muted(muted)
-		if event.is_action_pressed("pause_game"):
-			if state=="playing":
-				state = "paused"
-			elif state=="paused":
-				state = "playing"
-			elif state=="menu":
-				menu_help = false
+			return
+		if is_instance_valid(menu_ui) and menu_ui.consume_shortcut(event):
+			get_viewport().set_input_as_handled()
+			return
+		if state not in ["playing","boss_intro"]: return
 		if state=="boss_intro" and event.physical_keycode==KEY_ENTER:
 			director.boss_intro = 0
-		if event.is_action_pressed("journal"):
-			if state=="playing": campaign.open_map()
-			elif state in ["journal","world_map"]: state = "playing" if is_instance_valid(player) else "menu"
-		if event.is_action_pressed("pause_game") and state in ["shop","journal","settings","credits","world_map"]:
-			state = campaign.map_return if state=="world_map" else "world_map" if state=="journal" else "menu" if state=="credits" else director.settings_return if state=="settings" else "playing"
 			return
-		if event.physical_keycode==KEY_ENTER:
-			if state=="menu": return
-			elif state=="dead": respawn()
-			elif state=="victory": start_game()
-		if event.is_action_pressed("retry") and state=="dead": respawn()
-		if state=="upgrade":
-			if event.physical_keycode==KEY_1: choose_upgrade(0)
-			elif event.physical_keycode==KEY_2: choose_upgrade(1)
-			elif event.physical_keycode==KEY_3: choose_upgrade(2)
-	if event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
-		if state=="menu": return
-		var mouse: Vector2 = hud.get_local_mouse_position()
-		for button: Dictionary in get_buttons():
-			if button.rect.has_point(mouse):
-				activate_button(button.action)
-				get_viewport().set_input_as_handled()
-				break
+		if event.is_action_pressed("pause_game"):
+			state = "paused"
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("journal") and state=="playing":
+			campaign.open_map()
+			get_viewport().set_input_as_handled()
+		elif event.is_action_pressed("local_map") and state=="playing":
+			campaign.action("local_map")
+			get_viewport().set_input_as_handled()
+
+func dismiss_messages() -> void:
+	notice_timer = 0
+	director.radio_time = 0
+	messages_dismissed.emit()
+
 
 func activate_button(action: String) -> void:
 	audio.play_sfx("click")
@@ -705,6 +725,7 @@ func add_shake(amount: float) -> void:
 func show_notice(value: String) -> void:
 	notice = value
 	notice_timer = 4
+	notice_shown.emit(value)
 
 func _load_record() -> void:
 	var cfg: ConfigFile = ConfigFile.new()
@@ -746,13 +767,10 @@ func _draw() -> void:
 		elif p.kind=="relic":
 			draw_circle(pos,11,Color(0.4,0.9,0.85,0.08))
 			draw_arc(pos,9,clock,clock+4.8,16,TEAL,1)
-			draw_rect(Rect2(pos-Vector2(4,6),Vector2(8,12)),Color("2e6c71"))
-			draw_rect(Rect2(pos-Vector2(2,4),Vector2(4,8)),TEAL)
-			draw_rect(Rect2(pos-Vector2(1,3),Vector2(2,3)),CREAM)
+			draw_texture_rect(preload("res://assets/ui/items/memory.png"),Rect2((pos-Vector2(12,12)).round(),Vector2(24,24)),false)
 		else:
-			draw_rect(Rect2(pos-Vector2(6,6),Vector2(12,12)),Color("203d40"))
-			draw_rect(Rect2(pos-Vector2(2,4),Vector2(4,8)),TEAL)
-			draw_rect(Rect2(pos-Vector2(4,2),Vector2(8,4)),TEAL)
+			draw_circle(pos,10,Color(0.4,0.9,0.85,0.06))
+			draw_texture_rect(preload("res://assets/ui/items/repair.png"),Rect2((pos-Vector2(12,12)).round(),Vector2(24,24)),false)
 	for p: Dictionary in projectiles:
 		var direction: Vector2 = p.vel.normalized()
 		draw_line(p.pos-direction*12,p.pos,p.color,3)
@@ -835,7 +853,7 @@ func _draw_portal(pos: Vector2, active: bool) -> void:
 	draw_string(FONT,pos+Vector2(-19,-103),"RELAY",HORIZONTAL_ALIGNMENT_LEFT,-1,10,CREAM)
 	if state=="playing" and is_instance_valid(player) and absf(player.position.x-pos.x)<65:
 		draw_rect(Rect2(pos+Vector2(-45,-129),Vector2(90,19)),Color("14242d"))
-		draw_string(FONT,pos+Vector2(-37,-115),"E  传递火种" if active else "完成本区目标",HORIZONTAL_ALIGNMENT_LEFT,-1,10,TEAL if active else AMBER)
+		draw_string(FONT,pos+Vector2(-37,-115),"E  传递火种" if active else "E  查看通路",HORIZONTAL_ALIGNMENT_LEFT,-1,10,TEAL if active else AMBER)
 
 func _draw_furnace() -> void:
 	var pos: Vector2 = Vector2(1840,300)
@@ -921,4 +939,3 @@ func _notification(what: int) -> void:
 		get_tree().quit()
 	elif what==NOTIFICATION_APPLICATION_FOCUS_OUT and state=="playing" and not test_mode:
 		state = "paused"
-

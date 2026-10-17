@@ -14,8 +14,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="余烬信使 · 长路 4.0 / EMBER RELAY"
-config/version="4.0.0"
+config/name="余烬信使 · 寻光 5.1 / EMBER RELAY"
+config/version="5.1.0"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0.035, 0.065, 0.1, 1)
@@ -38,4 +38,3 @@ textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.055, 0.082, 0.125, 1)
-

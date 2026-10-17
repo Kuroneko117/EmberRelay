@@ -1,11 +1,15 @@
 extends CharacterBody2D
-const ART = preload("res://scripts/art.gd")
+const VISUAL = preload("res://scripts/enemy_visual.gd")
+var visual: AnimatedSprite2D
 ## The four furnace constructs. All attacks have an explicit warning and recovery.
 
 var game: Node
 var kind: String = "scout"
 var max_health: float = 4
-var health: float = 4
+var health: float = 4:
+	set(value):
+		health = value
+		if is_instance_valid(game) and kind=="boss": game.stats_changed.emit()
 var dead: bool = false
 var facing: int = -1
 var phase: int = 1
@@ -35,6 +39,9 @@ const FIRE: Color = Color("ff724c")
 const HOT: Color = Color("ffdd8a")
 const RED: Color = Color("ed476f")
 
+
+func combat_size() -> Vector2:
+	return Vector2(64,54) if kind=="boss" else Vector2(42,28) if kind=="guard" else Vector2(40,26) if kind=="sentry" else Vector2(30,26) if kind=="drone" else Vector2(36,26)
 
 func setup(type: String, where: Vector2, owner_game: Node) -> void:
 	kind = type
@@ -72,16 +79,19 @@ func _ready() -> void:
 	var hitbox: CollisionShape2D = CollisionShape2D.new()
 	var rectangle: RectangleShape2D = RectangleShape2D.new()
 	if kind == "boss":
-		rectangle.size = Vector2(36, 54)
+		rectangle.size = Vector2(52, 54)
 		hitbox.position = Vector2(0, -27)
 	elif kind == "drone":
 		rectangle.size = Vector2(24, 18)
 		hitbox.position = Vector2(0, -13)
 	else:
-		rectangle.size = Vector2(18, 26)
+		rectangle.size = Vector2(32, 26)
 		hitbox.position = Vector2(0, -13)
 	hitbox.shape = rectangle
 	add_child(hitbox)
+	visual = VISUAL.new()
+	visual.configure(self,kind)
+	add_child(visual)
 	queue_redraw()
 
 
@@ -205,6 +215,7 @@ func _drone(delta: float, offset: Vector2) -> void:
 		if timer <= 0.0:
 			game.spawn_projectile(position + Vector2(0, -13) + attack_aim * 17.0, attack_aim * 145.0, 1, true, RED)
 			game.fx_burst(position + Vector2(0, -13), RED, 5)
+			visual.show_attack(0.32)
 			_sfx("shoot")
 			_recover(0.3, 1.9)
 	else:
@@ -253,6 +264,7 @@ func _boss(delta: float, offset: Vector2) -> void:
 						game.spawn_projectile(position+Vector2(45,-8),Vector2(190,0),1,true,RED)
 				"fan":
 					timer = 0.15
+					visual.show_attack(0.4)
 					var shot_count: int = 3 if phase == 1 else 5
 					for i: int in range(shot_count):
 						var angle: float = (float(i) - float(shot_count - 1) * 0.5) * 0.22
@@ -348,7 +360,9 @@ func _die() -> void:
 		game.add_shake(9.0 if kind == "boss" else 2.5)
 		_sfx("enemy_die")
 		game.on_enemy_killed(self)
-	queue_free()
+	set_physics_process(false)
+	set_deferred("collision_layer",0)
+	get_child(0).set_deferred("disabled",true)
 
 
 func _sfx(sound_name: String) -> void:
@@ -357,6 +371,7 @@ func _sfx(sound_name: String) -> void:
 
 
 func _draw() -> void:
+	if dead: return
 	var glow: Color = Color("78d8cd") if kind=="sentry" else RED if (kind == "drone" or phase == 2) else FIRE
 	var body: Color = Color("fff1ce") if flash > 0.0 else ARMOR
 	var edge: Color = Color.WHITE if flash > 0.0 else EDGE
@@ -377,13 +392,6 @@ func _draw() -> void:
 		for i: int in range(7):
 			var xx: float = -reach + float(i) * reach / 3.0
 			draw_rect(Rect2(xx, -14, 5, 9), Color(HOT, 0.8))
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2(float(facing), 1.0))
-	match kind:
-		"boss": _draw_boss(body, edge, glow, warning)
-		"guard": _draw_atlas_enemy(glow,warning)
-		"drone": _draw_atlas_enemy(glow,warning)
-		_: _draw_atlas_enemy(glow,warning)
-	draw_set_transform(Vector2.ZERO)
 	if health < max_health and kind != "boss":
 		var bar_y: float = -42.0 if kind == "guard" else -38.0
 		draw_rect(Rect2(-13, bar_y, 26, 3), INK)
@@ -392,108 +400,6 @@ func _draw() -> void:
 		var top: float = -83.0 if kind == "boss" else -46.0 if kind == "guard" else -42.0
 		draw_rect(Rect2(-1, top, 3, 7), HOT)
 		draw_rect(Rect2(-1, top + 9, 3, 3), HOT)
-
-
-func _draw_boss(body: Color, edge: Color, glow: Color, warning: bool) -> void:
-	var stride: float = roundf(sin(age*9)*3) if absf(velocity.x)>5 else 0
-	var breath: float = roundf(sin(age*2)*1)
-	var pre: float = 1-clampf(timer/maxf(warning_time,0.01),0,1) if warning else 0
-	draw_rect(Rect2(-32,-2,64,4),Color(INK,0.6))
-	# Pistons, knee caps and grounded feet retain mass through the animation.
-	for side: int in [-1,1]:
-		var x: float = side*14
-		var sy: float = stride*side
-		draw_line(Vector2(x,-28),Vector2(x+side*3,-8+sy),INK,13)
-		draw_line(Vector2(x-2,-25),Vector2(x+side*3-2,-7+sy),edge,4)
-		draw_rect(Rect2(x-4,-19,3,9),glow.darkened(0.2))
-		ART.stamp(self,Rect2(80,0,16,16),Rect2(x-7,-18,14,12),Color("b1bab0"))
-		draw_colored_polygon(PackedVector2Array([Vector2(x-11,-7+sy),Vector2(x+10,-7+sy),Vector2(x+14,-2+sy),Vector2(x+14,1+sy),Vector2(x-12,1+sy)]),INK)
-		draw_line(Vector2(x-10,-5+sy),Vector2(x+11,-5+sy),edge,2)
-	# Chamfered boiler shell, textured armour and rivets.
-	draw_set_transform(Vector2(0,breath),0,Vector2(float(facing),1))
-	draw_colored_polygon(PackedVector2Array([Vector2(-29,-57),Vector2(-20,-64),Vector2(20,-64),Vector2(29,-56),Vector2(26,-23),Vector2(16,-18),Vector2(-20,-18),Vector2(-28,-25)]),INK)
-	draw_colored_polygon(PackedVector2Array([Vector2(-26,-55),Vector2(-18,-61),Vector2(18,-61),Vector2(26,-54),Vector2(23,-26),Vector2(14,-21),Vector2(-18,-21),Vector2(-25,-27)]),body)
-	ART.stamp(self,Rect2(288,0,48,16),Rect2(-24,-53,48,15),Color("acb6a7") if flash<=0 else Color.WHITE)
-	draw_line(Vector2(-21,-58),Vector2(20,-58),edge,2)
-	for side: int in [-1,1]:
-		var x: float = side*23
-		draw_colored_polygon(PackedVector2Array([Vector2(x-8,-57),Vector2(x+6,-57),Vector2(x+10,-50),Vector2(x+8,-38),Vector2(x-8,-38)]),edge)
-		draw_rect(Rect2(x-5,-54,10,3),Color("a5b4ad"))
-		for yy: int in [-51,-43]: draw_rect(Rect2(x-5,yy,2,2),INK)
-	# Smokestacks hiss continuously; overloading changes both heat and silhouette.
-	for i: int in range(2):
-		var x: float = -22+i*11
-		var h: float = 21+i*7
-		ART.stamp(self,Rect2(272,0,16,64),Rect2(x,-58-h,7,h),Color("bbc4b0"))
-		draw_rect(Rect2(x,-58-h,7,3),glow)
-		for j: int in range(3):
-			var rise: float = fposmod(age*(17+phase*6)+j*8,25)
-			draw_rect(Rect2(x+sin(age*2+j)*3,-60-h-rise,4+rise*0.15,3),Color(glow if phase==2 else edge,0.32*(1-rise/25)))
-	draw_rect(Rect2(-15,-47,30,25),INK)
-	draw_rect(Rect2(-12,-45,24,20),glow.darkened(0.18))
-	draw_rect(Rect2(-9,-42,18,15),glow)
-	draw_rect(Rect2(-5,-38,10,10),HOT)
-	draw_rect(Rect2(-2,-36,4,7),Color("fff6d2"))
-	for i: int in range(5): draw_rect(Rect2(-12+i*5,-46,2,22),body)
-	draw_line(Vector2(-15,-23),Vector2(15,-23),edge,2)
-	# Slit-eyed head turns slightly into the selected attack.
-	var head_y: float = -68+(3*pre if warning and attack_kind=="rush" else 0)
-	draw_colored_polygon(PackedVector2Array([Vector2(-6,head_y),Vector2(16,head_y),Vector2(23,head_y+6),Vector2(20,head_y+16),Vector2(-6,head_y+16)]),INK)
-	draw_rect(Rect2(-3,head_y+3,21,10),body)
-	draw_rect(Rect2(1,head_y+7,20,3),glow)
-	draw_rect(Rect2(18,head_y+4,3,3),HOT)
-	draw_line(Vector2(-5,head_y+1),Vector2(17,head_y+1),edge,2)
-	# The hammer lifts on anticipation, accelerates into impact and settles in recovery.
-	var arm_angle: float = -0.1
-	if warning and attack_kind=="slam": arm_angle = lerpf(-0.1,-2.55,pre*pre)
-	elif mode=="active" and attack_kind=="slam": arm_angle = -0.55
-	elif warning and attack_kind=="fan": arm_angle = -1.4
-	elif mode=="active" and attack_kind=="rush": arm_angle = -0.7
-	draw_set_transform(Vector2(27*facing,-48+breath),arm_angle*facing,Vector2(float(facing),1))
-	draw_line(Vector2.ZERO,Vector2(0,25),INK,10)
-	draw_line(Vector2(-2,2),Vector2(-2,24),edge,4)
-	draw_line(Vector2(2,4),Vector2(2,23),Color("a6b7b1"),2)
-	draw_rect(Rect2(-13,22,29,18),INK)
-	ART.stamp(self,Rect2(80,0,16,16),Rect2(-11,24,25,13),Color("cfceaf"))
-	draw_rect(Rect2(-11,36,25,4),glow)
-	draw_rect(Rect2(-7,25,3,10),edge)
-	draw_rect(Rect2(8,25,3,10),edge)
-	draw_set_transform(Vector2.ZERO,0,Vector2(float(facing),1))
-	if phase_pulse>0:
-		draw_arc(Vector2(0,-36),48+(1-phase_pulse)*50,0,TAU,32,Color(glow,phase_pulse*0.6),2)
-	if mode=="recovery":
-		for i: int in range(3): draw_rect(Rect2(-10+i*7,-80-sin(age*4+i)*3,2,2),Color("92b6b5"))
-
-
-func _draw_atlas_enemy(glow: Color, warning: bool) -> void:
-	var frame: int = int(age*9)%4
-	var row: int = 368
-	var size: float = 32
-	if kind=="guard":
-		row = 400
-		size = 42
-	elif kind=="drone":
-		row = 432
-		size = 32
-	if mode=="idle" and absf(velocity.x)<4: frame = int(age*4)%2
-	if warning: frame = 1
-	var tint: Color = Color("fff3da") if flash>0 else Color("ddd8c3")
-	ART.stamp(self,Rect2(frame*16,row,16,16),Rect2(-size/2,-size+(3 if warning and kind!="drone" else 0),size,size),tint)
-	if kind=="sentry":
-		# A braced base and long aimable barrel distinguish ranged sentries at a glance.
-		draw_rect(Rect2(-13,-5,26,5),Color("344f59"))
-		draw_line(Vector2(-10,-2),Vector2(-16,1),Color("85a6a2"),2)
-		draw_line(Vector2(10,-2),Vector2(16,1),Color("85a6a2"),2)
-		var muzzle: Vector2 = Vector2(0,-18)+Vector2(absf(attack_aim.x),attack_aim.y)*24
-		draw_line(Vector2(1,-18),muzzle,INK,7)
-		draw_line(Vector2(1,-19),muzzle-Vector2(0,1),Color("93aaa3"),3)
-		draw_circle(muzzle,3,glow)
-		if warning: draw_line(muzzle,muzzle+Vector2(absf(attack_aim.x),attack_aim.y)*75,Color(glow,0.35),1)
-	if warning:
-		draw_circle(Vector2(2,-size*0.58),8,Color(glow,0.12))
-		draw_line(Vector2(9,-size*0.58),Vector2(21,-size*0.58-7),glow,2)
-	if mode=="active" and kind!="drone":
-		draw_colored_polygon(PackedVector2Array([Vector2(8,-17),Vector2(30,-12),Vector2(9,-7)]),Color(glow,0.8))
 
 func _sentry(delta: float,offset: Vector2) -> void:
 	velocity.x = 0
@@ -509,5 +415,5 @@ func _sentry(delta: float,offset: Vector2) -> void:
 				game.spawn_projectile(position-Vector2(0,18)+direction*19,direction*195,1,true,Color("78d8cd"))
 			_sfx("shoot")
 			_recover(0.65,1.8)
+			visual.show_attack(0.3)
 	else: _tick_recovery(delta)
-

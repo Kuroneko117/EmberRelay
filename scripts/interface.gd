@@ -4,6 +4,7 @@ const T = preload("res://scripts/ui_theme.gd")
 const REGION_ART = preload("res://scripts/region_art.gd")
 const PORTRAIT = preload("res://scripts/unit_portrait.gd")
 const SECTOR_MAP = preload("res://scripts/sector_map.gd")
+const WORLD_ROUTE = preload("res://scripts/world_route.gd")
 const ITEM_DISPLAY = preload("res://scripts/item_display.gd")
 var game: Node
 var screen: Control
@@ -144,6 +145,13 @@ func _button(parent: Node,text: String,action: String,primary: bool=false,height
 	return node
 
 func _pressed(action: String) -> void:
+	if action.begins_with("map_") and fields.has("area_map"):
+		match action:
+			"map_all": fields.area_map.overview()
+			"map_center": fields.area_map.center_on_player()
+			"map_plus": fields.area_map.zoom_by(0.75)
+			"map_minus": fields.area_map.zoom_by(1.33)
+		return
 	if action=="bestiary": game.state = "bestiary"
 	elif action=="bestiary_back": game.state = "menu"
 	elif action=="asset_credits": game.state = "asset_credits"
@@ -225,31 +233,38 @@ func _title() -> void:
 func _atlas() -> void:
 	_veil(0.98)
 	var root_box: VBoxContainer = _vbox(_margin(screen,20),8)
-	var head: HBoxContainer = _header(root_box,"LIGHTHOUSE NETWORK / 航线终端","选择下一段旅途")
+	var head: HBoxContainer = _header(root_box,"LIGHTHOUSE NETWORK / 全域航线","余烬航线")
 	_label(head,"%02d / 02\n航线已送达"%game.campaign.completed.size(),10,T.TEAL)
-	var cards: HBoxContainer = _hbox(root_box,12)
-	cards.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var chart: Control = WORLD_ROUTE.new()
+	chart.game = game
+	chart.custom_minimum_size = Vector2(0,206)
+	chart.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root_box.add_child(chart)
 	for region: int in range(2):
-		var card: PanelContainer = _panel(cards)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var column: VBoxContainer = _vbox(card,5)
 		var selected: bool = game.campaign.selected==region
-		var select: Button = _button(column,"%02d   %s   %s"%[region+1,game.campaign.REGIONS[region],"●" if selected else "○"],"region"+str(region),selected,28)
-		select.add_theme_font_size_override("font_size",15)
-		var art: Control = REGION_ART.new()
-		art.region = region
-		art.custom_minimum_size = Vector2(0,80)
-		art.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		column.add_child(art)
-		var status: String = "已送达" if game.campaign.completed.has(region) else "信号接通" if region<=game.campaign.unlocked else "击败熔炉看守后开放"
-		_label(column,status+"   /   "+game.campaign.BOSSES[region],9,T.GOLD if region<=game.campaign.unlocked else T.MUTED)
-		var nodes: HBoxContainer = _hbox(column,3)
-		for sector: int in range(region*3,region*3+3):
-			var node: Button = _button(nodes,game.chapter_names[sector],"route_"+str(sector),false,23)
-			node.add_theme_font_size_override("font_size",9)
-			node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			node.disabled = not game.campaign.visited.has(sector) and not (sector==region*3 and region<=game.campaign.unlocked)
-			if is_instance_valid(game.player) and game.chapter==sector: node.add_theme_color_override("font_color",T.GOLD)
+		var select: Button = _button(chart,"%02d  %s"%[region+1,game.campaign.REGIONS[region]],"region"+str(region),selected,24)
+		select.add_theme_font_size_override("font_size",10)
+		select.anchor_top = 0 if region==0 else 0.51
+		select.anchor_bottom = select.anchor_top
+		select.offset_left = 10
+		select.offset_right = 142
+		select.offset_top = 5
+		select.offset_bottom = 29
+	for sector: int in range(6):
+		var node: Button = _button(chart,"%02d  %s"%[sector+1,game.chapter_names[sector]],"route_"+str(sector),false,28)
+		var p: Vector2 = WORLD_ROUTE.POINTS[sector]
+		node.anchor_left = p.x
+		node.anchor_right = p.x
+		node.anchor_top = p.y
+		node.anchor_bottom = p.y
+		node.offset_left = -54
+		node.offset_right = 54
+		node.offset_top = -14
+		node.offset_bottom = 14
+		node.add_theme_font_size_override("font_size",10)
+		node.disabled = not game.campaign.visited.has(sector) and not (sector%3==0 and sector/3<=game.campaign.unlocked)
+		if is_instance_valid(game.player) and game.chapter==sector: node.add_theme_color_override("font_color",T.GOLD)
+	_label(root_box,"终点守卫 / "+game.campaign.BOSSES[game.campaign.selected]+"    ·    "+("航线已接通" if game.campaign.selected<=game.campaign.unlocked else "击败熔炉看守后接通"),9,T.MUTED)
 	var footer: HBoxContainer = _hbox(root_box)
 	_button(footer,"返回","atlas_back",false,28)
 	if is_instance_valid(game.player): _button(footer,"区域图","local_map",false,28)
@@ -595,18 +610,24 @@ func _help() -> void:
 	default_button = _button(box,"明白了，继续前行","help",true,30)
 
 func _journal() -> void:
-	var box: VBoxContainer = _modal(548,296)
-	_header(box,"LOCAL ROUTE / 区域记录",game.chapter_names[game.chapter])
+	var box: VBoxContainer = _modal(594,316)
+	var header: HBoxContainer = _header(box,"LOCAL SURVEY / 区域路线",game.chapter_names[game.chapter])
+	for entry: Array in [["全图","map_all"],["定位","map_center"],["−","map_minus"],["+","map_plus"]]:
+		var control: Button = _button(header,entry[0],entry[1],false,24)
+		control.add_theme_font_size_override("font_size",10)
+		control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var map: Control = SECTOR_MAP.new()
 	map.game = game
-	map.custom_minimum_size = Vector2(0,114)
+	map.custom_minimum_size = Vector2(0,142)
+	map.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(map)
-	_label(box,"● 你的位置   ◇ 当前目标   P 供电 / 1·2 信标   金色未启动 · 青色已接通",9,T.TEAL)
-	_label(box,_objective(),12,T.GOLD)
-	_label(box,game.guide.current().get("detail","")+"  ·  "+game.guide.direction(game.guide.current()),10,T.PAPER)
-	_label(box,"记忆 %d / 18   补给箱 %d / 15   守卫击败 %d"%[game.relics,game.director.secrets,game.total_kills],11,T.MUTED)
-	_spacer(box)
-	default_button = _button(box,"继续旅途   C / ESC" if game.campaign.local_return=="playing" else "返回世界地图","local_back",true,29)
+	fields.area_map = map
+	_label(box,"● 当前位置   ◇ 目标   青色中继站   金色补给 / 机关   暗红未解封锁",8,T.TEAL)
+	_label(box,_objective()+"  ·  "+game.guide.direction(game.guide.current()),11,T.GOLD)
+	var footer: HBoxContainer = _hbox(box)
+	_label(footer,"拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)
+	_spacer(footer,false)
+	default_button = _button(footer,"继续旅途   C / ESC" if game.campaign.local_return=="playing" else "返回世界地图","local_back",true,28)
 
 func _bestiary() -> void:
 	_veil(0.98)
@@ -664,6 +685,11 @@ func _asset_credits() -> void:
 func consume_shortcut(event: InputEvent) -> bool:
 	if not event is InputEventKey or not event.pressed or event.echo: return false
 	var key: int = event.physical_keycode
+	if game.state=="journal" and fields.has("area_map"):
+		if key in [KEY_A,KEY_D]: fields.area_map.pan(-1 if key==KEY_A else 1); return true
+		if key in [KEY_EQUAL,KEY_KP_ADD]: fields.area_map.zoom_by(0.75); return true
+		if key in [KEY_MINUS,KEY_KP_SUBTRACT]: fields.area_map.zoom_by(1.33); return true
+		if key==KEY_HOME: fields.area_map.center_on_player(); return true
 	if game.state in ["playing","boss_intro"]: return false
 	if key==KEY_ESCAPE:
 		match game.state:

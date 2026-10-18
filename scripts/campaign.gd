@@ -52,6 +52,16 @@ func sector_loaded() -> void:
 	rest_points.clear()
 	if not visited.has(game.chapter): visited.append(game.chapter)
 
+func landmarks() -> Array:
+	return [
+		[{"x":330,"name":"废弃货站","kind":"depot"},{"x":1120,"name":"检修场","kind":"station"},{"x":2020,"name":"北线出口","kind":"station"}],
+		[{"x":350,"name":"进水闸","kind":"pump"},{"x":1120,"name":"输水机组","kind":"conduit"},{"x":1810,"name":"泵房站台","kind":"pump"}],
+		[{"x":470,"name":"炉前检修线","kind":"forge"},{"x":1270,"name":"整备平台","kind":"station"},{"x":1830,"name":"熔炉核心","kind":"forge"}],
+		[{"x":360,"name":"入口起重架","kind":"crane"},{"x":1960,"name":"停泊货船","kind":"dock"},{"x":2780,"name":"北岸装卸台","kind":"crane"}],
+		[{"x":380,"name":"高架入口","kind":"pylon"},{"x":1150,"name":"旧站台信标","kind":"signal"},{"x":2940,"name":"天线台信标","kind":"signal"}],
+		[{"x":530,"name":"观测前站","kind":"signal"},{"x":2320,"name":"风暴观测台","kind":"signal"},{"x":3330,"name":"织机核心","kind":"storm"}]
+	][game.chapter]
+
 func extra_layout(sector: int) -> Dictionary:
 	var data: Dictionary = {"width":3500.0,"platforms":[],"lamps":[],"enemies":[],"relics":[]}
 	if sector==3:
@@ -77,6 +87,12 @@ func extra_layout(sector: int) -> Dictionary:
 		data.relics = [Vector2(565,161),Vector2(1490,114),Vector2(2360,113)]
 	for x: int in range(170,int(data.width),420): data.lamps.append(Vector2(x,300))
 	return data
+
+func connect_upper_routes() -> void:
+	# Keep all old floors, checkpoints, items and saved positions intact.
+	var links: Array = [[Rect2(625,226,115,14)],[Rect2(555,224,112,14),Rect2(1595,195,96,14)],[],
+		[Rect2(615,222,120,14),Rect2(2295,216,112,14)],[Rect2(2820,239,100,14)],[]]
+	for link: Rect2 in links[game.chapter]: game.platforms.append(link)
 
 func capture_sector() -> Dictionary:
 	if not is_instance_valid(game.player): return {}
@@ -178,7 +194,7 @@ func action(value: String) -> void:
 		"local_back": game.state = local_return
 	if value.begins_with("route_"):
 		var destination: int = int(value.trim_prefix("route_"))
-		if visited.has(destination) or destination==selected*3: travel_to(destination)
+		if visited.has(destination) or (destination%3==0 and destination/3<=unlocked): travel_to(destination)
 
 func buttons() -> Array[Dictionary]:
 	if game.state=="world_map":

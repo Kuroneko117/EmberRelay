@@ -40,9 +40,9 @@ func _draw_new_landscape() -> void:
 	var palette: Array[Color] = [Color("a7aac1"),Color("84b7c7"),Color("d6a4ad")]
 	for i: int in range(3):
 		var tex: Texture2D = layers[i]
-		var sc: float = 2.0 if i<2 else 1.8
+		var sc: float = 2.0
 		var width: float = tex.get_width()*sc
-		var offset: float = fposmod(scroll*[0.07,0.18,0.35][i],width)
+		var offset: float = floorf(fposmod(scroll*[0.07,0.18,0.35][i],width))
 		for j: int in range(-1,4):
 			draw_texture_rect(tex,Rect2(j*width-offset,315-tex.get_height()*sc,width,tex.get_height()*sc),false,palette[chapter])
 		if i<2: draw_rect(Rect2(0,194+i*45,640,130),Color(horizon,0.035))
@@ -78,12 +78,12 @@ func _draw_water_sky() -> void:
 	var tint: Color = [Color("a1c7c8"),Color("c5c9b3"),Color("8dabbc")][stage]
 	draw_rect(Rect2(0,0,640,360),Color("142531"))
 	for i: int in range(-1,4):
-		draw_texture_rect(WATER_SKY,Rect2(i*256-fposmod(scroll*.025,256),-28,256,400),false,tint)
+		draw_texture_rect(WATER_SKY,Rect2(i*256-floorf(fposmod(scroll*.025,256)),-80,256,480),false,tint)
 	for layer: int in range(2):
 		var tex: Texture2D = WATER_FAR if layer==0 else WATER_NEAR
-		var sc: float = 1.7 if layer==0 else 1.2
+		var sc: float = 2.0 if layer==0 else 1.0
 		var width: float = tex.get_width()*sc
-		var offset: float = fposmod(scroll*(0.12 if layer==0 else 0.32),width)
+		var offset: float = floorf(fposmod(scroll*(0.12 if layer==0 else 0.32),width))
 		for i: int in range(-1,4):
 			draw_texture_rect(tex,Rect2(i*width-offset,312-tex.get_height()*sc,width,tex.get_height()*sc),false,tint.darkened(.22 if layer==0 else .05))
 	if stage==0:
@@ -107,5 +107,4 @@ func _draw_water_sky() -> void:
 	for i: int in range(5):
 		var x: float = fposmod(i*151+clock*3-scroll*.2,850)-120
 		draw_rect(Rect2(x,255+i*15,200,22),Color(.27,.47,.5,.04))
-
 

@@ -270,6 +270,7 @@ func _load_chapter() -> void:
 		level_width = layout.width
 		portal_x = level_width-110
 		checkpoint_x = campaign.checkpoints()[0]
+	campaign.connect_upper_routes()
 	for rect: Rect2 in platforms:
 		var body: StaticBody2D = StaticBody2D.new()
 		body.collision_layer = 1
@@ -806,13 +807,14 @@ func _draw_props() -> void:
 			draw_string(FONT,Vector2(28,253),"← 上一区域",HORIZONTAL_ALIGNMENT_LEFT,-1,9,TEAL)
 			if is_instance_valid(player) and player.position.x<65:
 				draw_string(FONT,Vector2(29,272),"E 返回",HORIZONTAL_ALIGNMENT_LEFT,-1,10,CREAM)
-		# Environmental story: direction markers and abandoned containers.
-		for i: int in range(5):
-			var x: float = 215+i*420
+		# Signs identify actual junctions rather than repeating every screen.
+		for landmark: Dictionary in campaign.landmarks():
+			var x: float = landmark.x
 			if absf(x-camera.position.x)>380: continue
 			draw_rect(Rect2(x+39,263,2,37),Color("405258"))
-			draw_rect(Rect2(x+29,259,25,13),Color("24343c"))
-			draw_string(FONT,Vector2(x+33,270),"→",HORIZONTAL_ALIGNMENT_LEFT,-1,12,AMBER)
+			draw_rect(Rect2(x+17,251,78,21),Color("142b35"))
+			draw_string(FONT,Vector2(x+21,260),landmark.name,HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("a3b9b4"))
+			draw_string(FONT,Vector2(x+21,270),"主路  →",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("dbb67e"))
 		if chapter==2:
 			_draw_furnace()
 			if boss_awake and not boss_defeated:

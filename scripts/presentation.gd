@@ -237,10 +237,11 @@ func _draw_mechanism() -> void:
 			for i: int in range(10): draw_rect(Rect2(534+i*10,288,1,12),Color("54766f"))
 	# The machine is recognizable before its text prompt appears.
 	var p: Vector2 = mechanism-Vector2(36,0)
-	ART.stamp(self,Rect2(32,96,32,32),Rect2(p-Vector2(14,37),Vector2(28,37)),Color("b4c0a7"))
+	draw_texture_rect(preload("res://assets/art/water-control-box-1.png"),Rect2(p-Vector2(16,21),Vector2(32,21)),false,Color("a4bcb4"))
+	draw_rect(Rect2(p-Vector2(2,2),Vector2(4,3)),Color("607e80"))
 	var active: bool = lift_on if game.chapter==0 else circuit_on
-	draw_rect(Rect2(p+Vector2(-5,-29),Vector2(8,12)),Color("7be3cf") if active else Color("b4a278"))
-	draw_line(p+Vector2(10,-20),p+Vector2(19,-29 if active else -12),Color("e6b475"),3)
+	draw_rect(Rect2(p+Vector2(-10,-16),Vector2(6,8)),Color("7be3cf") if active else Color("b4a278"))
+	draw_line(p+Vector2(10,-14),p+Vector2(19,-23 if active else -6),Color("e6b475"),2)
 	if active:
 		draw_circle(p-Vector2(0,23),25,Color(0.3,0.85,0.7,0.045))
 	if game.player.position.distance_to(mechanism)<62 and _mechanism_is_closest():

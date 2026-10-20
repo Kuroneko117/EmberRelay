@@ -196,7 +196,7 @@ func _draw() -> void:
 		draw_rect(Rect2(p-Vector2(10,31),Vector2(20,1)),Color("879b97"))
 		for i: int in range(3): draw_line(p+Vector2(-7,-27+i*3),p+Vector2(6-i*2,-27+i*3),Color("70938d"),1)
 		if p.distance_to(game.player.position)<42 and p.distance_to(game.player.position)<mechanism.distance_to(game.player.position):
-			draw_string(FONT,p-Vector2(24,41),"E  旧日留言",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("c7d4bd"))
+			draw_string(FONT,p-Vector2(24,41),game.controls.prompt("interact")+"  旧日留言",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("c7d4bd"))
 	for bird: Dictionary in birds:
 		var p: Vector2 = bird.pos
 		var wing: float = sin(bird.age*24)*4 if bird.flying else 0
@@ -248,7 +248,7 @@ func _draw_mechanism() -> void:
 		var label: String = "E  运输升降台" if game.chapter==0 else "E  水力桥供电" if game.chapter==1 else "E  释放备用核心"
 		if active and game.chapter!=0: label = "供电完成" if game.chapter==1 else "备用核心已释放"
 		draw_rect(Rect2(mechanism-Vector2(63,61),Vector2(126,18)),Color("101e29"))
-		draw_string(FONT,mechanism-Vector2(55,48),label,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("b7ded0"))
+		draw_string(FONT,mechanism-Vector2(55,48),label.replace("E ",game.controls.prompt("interact")+" "),HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("b7ded0"))
 
 func _mechanism_is_closest() -> bool:
 	var distance: float = game.player.position.distance_to(mechanism)
@@ -321,4 +321,4 @@ func _draw_new_mechanism() -> void:
 			if relay.on: label = "信标已接通" if game.chapter==4 else "能源已接通"
 			var prompt: Vector2 = p+Vector2(-52,8) if game.chapter==4 else p-Vector2(52,48)
 			draw_rect(Rect2(prompt,Vector2(108,19)),Color("111e28"))
-			draw_string(FONT,prompt+Vector2(6,13),label,HORIZONTAL_ALIGNMENT_LEFT,-1,10,col)
+			draw_string(FONT,prompt+Vector2(6,13),label.replace("E ",game.controls.prompt("interact")+" "),HORIZONTAL_ALIGNMENT_LEFT,-1,10,col)

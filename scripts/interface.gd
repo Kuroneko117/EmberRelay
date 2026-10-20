@@ -30,6 +30,7 @@ func _ready() -> void:
 	game.notice_shown.connect(_notice)
 	game.radio_received.connect(_radio)
 	game.messages_dismissed.connect(_dismiss_toast)
+	game.controls.changed.connect(_controls_changed)
 	_refresh()
 
 func _queue_refresh() -> void:
@@ -68,6 +69,8 @@ func _refresh() -> void:
 		"asset_credits": _asset_credits()
 		"journal": _journal()
 		"bestiary": _bestiary()
+		"attunement": _attunement()
+		"controls": _controls()
 	building = false
 	_sync_stats()
 	call_deferred("_focus_default")
@@ -76,6 +79,10 @@ func _refresh() -> void:
 
 func _focus_default() -> void:
 	if is_instance_valid(default_button) and default_button.is_inside_tree() and not default_button.disabled: default_button.grab_focus()
+
+func _controls_changed() -> void:
+	if game.state in ["controls","menu"]: _queue_refresh()
+	else: _sync_stats()
 
 func _label(parent: Node,text: String,font_size: int=11,color: Color=T.PAPER,wrap: bool=false) -> Label:
 	var node: Label = Label.new()
@@ -145,6 +152,14 @@ func _button(parent: Node,text: String,action: String,primary: bool=false,height
 	return node
 
 func _pressed(action: String) -> void:
+	if action=="controls": game.state = "controls"; return
+	if action=="controls_back": game.controls.capture_action = ""; game.state = "settings"; return
+	if action=="reset_keys": game.controls.reset_bindings(); return
+	if action.begins_with("bind_"):
+		game.controls.capture_action = action.trim_prefix("bind_")
+		game.controls.status = "请按下新按键 · Esc 取消 · 不会覆盖已有绑定"
+		_queue_refresh()
+		return
 	if action.begins_with("map_") and fields.has("area_map"):
 		match action:
 			"map_all": fields.area_map.overview()
@@ -227,7 +242,7 @@ func _title() -> void:
 	_spacer(row,false)
 	var right: VBoxContainer = _vbox(row)
 	right.alignment = BoxContainer.ALIGNMENT_END
-	_label(right,"THE LONG ROAD / 05",9,T.TEAL)
+	_label(right,"THE LIVING EMBER / 06",9,T.TEAL)
 	_label(right,"信号在线  ·  最佳 %06d"%game.best_score,9,T.PAPER)
 
 func _atlas() -> void:
@@ -339,13 +354,24 @@ func _hud() -> void:
 		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		if info_key[0]=="F": fields.repairs = key
 		if info_key[0]=="R": fields.burst = key
+		if info_key[0]=="Q": fields.parry = key
 	var gauge: VBoxContainer = _vbox(lower,3)
 	gauge.custom_minimum_size.x = 70
 	gauge.alignment = BoxContainer.ALIGNMENT_CENTER
-	_label(gauge,"余烬共鸣",8,T.MUTED)
+	fields.flame_status = _label(gauge,"余烬共鸣",8,T.MUTED)
 	fields.focus = _bar(gauge,T.GOLD,4)
+	fields.equipped = _label(gauge,"",8,T.TEAL)
 	_spacer(lower,false)
-	_label(lower,"J 连斩   K 射击   SHIFT 冲刺\nC 区域地图   TAB 航线   ESC 暂停",9,T.MUTED)
+	fields.controls_hint = _label(lower,"",9,T.MUTED)
+	var lesson: Label = _label(screen,"",9,T.PAPER)
+	lesson.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	lesson.offset_left = 80
+	lesson.offset_right = -80
+	lesson.offset_top = -57
+	lesson.offset_bottom = -42
+	lesson.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lesson.add_theme_stylebox_override("normal",T.flat(Color(0.025,0.06,0.08,0.88)))
+	fields.lesson = lesson
 	var boss_holder: CenterContainer = CenterContainer.new()
 	boss_holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	boss_holder.offset_top = 68
@@ -398,10 +424,16 @@ func _sync_stats() -> void:
 		fields.embers.text = "%02d"%game.embers
 		fields.memories.text = "%d/18"%game.relics
 		fields.clock.text = game.format_time(game.elapsed)
-		fields.repairs.text = "F ×%d"%game.director.potions
-		fields.burst.text = "R 就绪" if game.director.focus>=100 else "R"
+		fields.repairs.text = "%s ×%d"%[game.controls.prompt("heal"),game.director.potions]
+		fields.parry.text = game.controls.prompt("parry")
+		fields.burst.text = game.controls.prompt("burst")+(" 就绪" if game.director.focus>=100 else "")
+		fields.flame_status.text = "共鸣 %d"%int(game.director.focus)+(" · 返流" if game.flame.charged>0 else "")
+		fields.equipped.text = game.flame.NAMES[game.flame.module] if game.flame.module>=0 else "支路中继 / 待装配"
+		fields.controls_hint.text = "%s 斩  %s 射  %s 冲刺\n%s 区域图  %s 航线"%[game.controls.prompt("attack"),game.controls.prompt("pulse"),game.controls.prompt("dash"),game.controls.prompt("local_map"),game.controls.prompt("journal")]
+		fields.lesson.text = game.flame.lesson_text
+		fields.lesson.visible = not game.flame.lesson_text.is_empty()
 		var target: Dictionary = game.guide.current()
-		fields.goal.text = _objective()+"\n"+game.guide.direction(target)
+		fields.goal.text = _objective()+"\n"+game.guide.direction(target).replace("E ",game.controls.prompt("interact")+" ").replace("C ",game.controls.prompt("local_map")+" ")
 		if (game.boss_awake and not game.boss_defeated) or game.director.active_arena>=0: _dismiss_toast()
 		fields.combo.text = "%02d 连击"%game.director.combo if game.director.combo>=3 else ""
 		fields.boss_holder.visible = game.boss_awake and not game.boss_defeated and is_instance_valid(game.boss)
@@ -518,8 +550,66 @@ func _settings() -> void:
 		game.director.difficulty = index
 		game.director.save_settings())
 	_label(box,"难度不改变成长上限。F11 切换全屏，M 静音。",10,T.MUTED)
+	_button(box,"键位设置 / 手柄操作","controls",false,26)
 	_spacer(box)
 	default_button = _button(box,"保存并返回","settings_back",true,31)
+
+func _controls() -> void:
+	var box: VBoxContainer = _modal(584,326)
+	box.add_theme_constant_override("separation",4)
+	_header(box,"INPUT / COURIER CONTROLS","操作与按键")
+	_label(box,"手柄：A 跳跃 · X 近战 · Y 射击 · B 冲刺 · LB 弹反\nRB 交互 · LT 修复 · RT 爆发 · START 暂停 · BACK 航线 · RS 区域图",9,T.TEAL)
+	var grid: GridContainer = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation",8)
+	grid.add_theme_constant_override("v_separation",2)
+	box.add_child(grid)
+	for i: int in range(game.controls.ACTIONS.size()):
+		var action: String = game.controls.ACTIONS[i]
+		_label(grid,game.controls.LABELS[i],10,T.MUTED).custom_minimum_size.x = 47
+		var key: String = "等待按键…" if game.controls.capture_action==action else _keyboard_binding(action)
+		var control: Button = _button(grid,key,"bind_"+action,false,21)
+		control.custom_minimum_size.x = 202
+		control.add_theme_font_size_override("font_size",10)
+	_label(box,game.controls.status,9,T.GOLD)
+	var toggle: CheckButton = CheckButton.new()
+	toggle.text = "显示情境教学提示"
+	toggle.button_pressed = game.controls.lessons_enabled
+	toggle.add_theme_font_size_override("font_size",10)
+	box.add_child(toggle)
+	toggle.toggled.connect(func(value: bool) -> void: game.controls.lessons_enabled = value; game.controls.save_config())
+	var footer: HBoxContainer = _hbox(box)
+	_button(footer,"恢复默认","reset_keys",false,27)
+	_spacer(footer,false)
+	default_button = _button(footer,"返回设置","controls_back",true,27)
+
+func _keyboard_binding(action: String) -> String:
+	for event: InputEvent in InputMap.action_get_events(action):
+		if event is InputEventKey: return OS.get_keycode_string(event.physical_keycode)
+	return "—"
+
+func _attunement() -> void:
+	var box: VBoxContainer = _modal(594,316)
+	_header(box,"IGNITION / OPTIONAL RELAY","把火种留给哪一种可能")
+	var on: bool = game.flame.lit.has(game.chapter)
+	_label(box,"中继已点亮 · 更换免费" if on else "接通消耗 60 共鸣，选定后扣除 · 也可以保留共鸣用于 100 点爆发",10,T.TEAL)
+	var cards: HBoxContainer = _hbox(box,9)
+	cards.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	for index: int in range(3):
+		var card: PanelContainer = _panel(cards)
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),T.TEAL if game.flame.module==index else Color("3c565d"),1,8))
+		var column: VBoxContainer = _vbox(card,4)
+		_label(column,["01 / 弹反反击","02 / 连斩破阵","03 / 空中机动"][index],8,T.MUTED)
+		_item_art(column,game.flame.ITEMS[index],T.TEAL if index==0 else T.GOLD).custom_minimum_size.y = 53
+		_label(column,game.flame.NAMES[index],17)
+		_label(column,game.flame.DETAILS[index],9,T.MUTED)
+		_spacer(column)
+		_button(column,"已装配 · 继续" if game.flame.module==index else "%d 装配"%(index+1),"attune_"+str(index),index==0,28)
+	var foot: HBoxContainer = _hbox(box)
+	_label(foot,"单槽装配。"+("接通后关闭蒸汽，升起排水步道。" if game.chapter==1 else "点亮的中继可免费改装。"),9,T.MUTED)
+	_spacer(foot,false)
+	_button(foot,"暂不接通","close",false,27)
 
 func _pause_or_retry() -> void:
 	var box: VBoxContainer = _modal(510,276)
@@ -600,12 +690,13 @@ func _help() -> void:
 	for index: int in range(2):
 		var column: VBoxContainer = _vbox(columns,6)
 		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var entries: Array = [["A / D · 方向键","左右移动"],["SPACE / W / ↑","跳跃 · 空中可二段跳"],["J / 鼠标左键","长按自动三连斩"],["K / 鼠标右键","能量波 · 辅助瞄准"]] if index==0 else [["SHIFT / Q","无敌冲刺 / 弹反"],["F / R","修复两格 / 满蓄能爆发"],["E / TAB","机关与交互 / 世界地图"],["S + SPACE","向下穿过薄平台"]]
+		var c: Node = game.controls
+		var entries: Array = [[c.prompt("move_left")+" / "+c.prompt("move_right"),"左右移动"],[c.prompt("jump"),"跳跃 · 空中可二段跳"],[c.prompt("attack"),"长按自动三连斩"],[c.prompt("pulse"),"能量波 · 辅助瞄准"]] if index==0 else [[c.prompt("dash")+" / "+c.prompt("parry"),"无敌冲刺 / 弹反"],[c.prompt("heal")+" / "+c.prompt("burst"),"修复两格 / 满蓄能爆发"],[c.prompt("interact")+" / "+c.prompt("journal"),"机关与交互 / 世界地图"],["↓ + "+c.prompt("jump"),"向下穿过薄平台"]]
 		for entry: Array in entries:
 			var row: HBoxContainer = _hbox(column,6)
 			_label(row,entry[0],9,T.GOLD).custom_minimum_size.x = 103
 			_label(row,entry[1],9,T.PAPER)
-	_label(box,"C 直接查看区域地图与机关标记；按攻击键收起通讯。\n首次激活中继站补满修复剂；首领恢复期装甲变弱。",10,T.MUTED)
+	_label(box,"近战与弹反积累共鸣：60 点亮支路中继，100 释放爆发。\n单槽装配可免费更换；重装守卫可以弹反或绕后。",10,T.MUTED)
 	_spacer(box)
 	default_button = _button(box,"明白了，继续前行","help",true,30)
 
@@ -625,7 +716,7 @@ func _journal() -> void:
 	_label(box,"● 当前位置   ◇ 目标   青色中继站   金色补给 / 机关   暗红未解封锁",8,T.TEAL)
 	_label(box,_objective()+"  ·  "+game.guide.direction(game.guide.current()),11,T.GOLD)
 	var footer: HBoxContainer = _hbox(box)
-	_label(footer,"拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)
+	_label(footer,"LB / RB 平移 · 方向键选择缩放按钮\nA 确认 · B / RS 返回" if game.controls.pad_active else "拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)
 	_spacer(footer,false)
 	default_button = _button(footer,"继续旅途   C / ESC" if game.campaign.local_return=="playing" else "返回世界地图","local_back",true,28)
 
@@ -700,13 +791,15 @@ func consume_shortcut(event: InputEvent) -> bool:
 			"settings":
 				game.director.save_settings()
 				game.state = game.director.settings_return
+			"controls": game.controls.capture_action = ""; game.state = "settings"
+			"attunement": game.state = "playing"
 			"world_map": game.campaign.action("atlas_back")
 			"journal": game.campaign.action("local_back")
 		return true
-	if key==KEY_TAB and game.state in ["world_map","journal"]:
+	if event.is_action_pressed("journal") and game.state in ["world_map","journal"]:
 		game.state = "playing" if is_instance_valid(game.player) else "menu"
 		return true
-	if key==KEY_C and game.state=="journal":
+	if event.is_action_pressed("local_map") and game.state=="journal":
 		game.campaign.action("local_back")
 		return true
 	if key in [KEY_1,KEY_2] and game.state=="world_map":
@@ -720,5 +813,8 @@ func consume_shortcut(event: InputEvent) -> bool:
 		return true
 	if key==KEY_R and game.state=="dead":
 		game.respawn()
+		return true
+	if key in [KEY_1,KEY_2,KEY_3] and game.state=="attunement":
+		game.flame.equip(key-KEY_1)
 		return true
 	return false

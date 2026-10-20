@@ -92,6 +92,10 @@ func _draw() -> void:
 		draw_rect(Rect2(p-Vector2(8,29),Vector2(17,14)),Color("102c35"))
 		draw_rect(Rect2(p-Vector2(8,29),Vector2(17,14)),col,false,1)
 		draw_string(FONT,p-Vector2(3,18),device.id,HORIZONTAL_ALIGNMENT_LEFT,-1,9,col)
+	var ember: Vector2 = point(game.flame.position_for())
+	var lit: bool = game.flame.lit.has(game.chapter)
+	draw_circle(ember-Vector2(0,9),5,Color("79d8cc") if lit else Color("efb473"),false,1)
+	draw_string(FONT,ember+Vector2(7,-6),"共鸣 / 已点亮" if lit else "共鸣 / 60",HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color("efb473"))
 	var objective: Dictionary = game.guide.current()
 	if not objective.is_empty() and objective.kind!="combat":
 		var target: Vector2 = point(objective.pos)

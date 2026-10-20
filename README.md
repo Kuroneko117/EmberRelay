@@ -1,4 +1,4 @@
-# 余烬信使 · 归途 / Ember Relay 5.2
+# 余烬信使 · 共鸣 / Ember Relay 6.0
 
 **在线试玩：[余烬信使](https://kuroneko117.github.io/EmberRelay/)**
 
@@ -6,7 +6,7 @@
 
 ![工业遗迹中的余烬航线](https://kuroneko117.github.io/EmberRelay/assets/cover.png)
 
-两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。工业场景重整，新增六区航线图、可缩放区域图和六处上层路线连接。
+两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。共鸣连接战斗与探索：点亮支路中继，选择弹反强化、第三击破甲或空中悬停装配。支持手柄、键盘改键、可缩放区域图与旧存档。
 
 本仓库由 GitHub Actions 构建浏览器试玩版。首次发布请在 Settings → Pages → Source 选择 GitHub Actions。在线试玩链接显示在 Actions 部署结果与 Deployments 中。
 

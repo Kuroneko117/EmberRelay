@@ -174,6 +174,7 @@ func _physics_process(delta: float) -> void:
 		var acceleration: float = 1350.0 if grounded else 940.0
 		velocity.x = move_toward(velocity.x, target_speed, acceleration * delta)
 	velocity.y = minf(velocity.y + GRAVITY * delta, 600.0)
+	if game.flame.hover>0: velocity.y = 0
 
 	if _jump_buffer > 0.0 and (_coyote > 0.0 or _jumps_used < 2) and _knockback_timer <= 0.0:
 		_do_jump()
@@ -183,7 +184,8 @@ func _physics_process(delta: float) -> void:
 	if (Input.is_action_pressed("attack") or _attack_buffer>0) and _attack_cooldown <= 0.0 and _knockback_timer <= 0.0 and parry_time<=0:
 		_attack_buffer = 0
 		_start_attack()
-	if Input.is_action_pressed("pulse") and _pulse_cooldown <= 0.0 and energy >= 28.0 and _knockback_timer <= 0.0 and parry_time<=0:
+	var pulse_cost: float = 14.0 if game.flame.module==0 and game.flame.charged>0 else 28.0
+	if Input.is_action_pressed("pulse") and _pulse_cooldown <= 0.0 and energy >= pulse_cost and _knockback_timer <= 0.0 and parry_time<=0:
 		_fire_pulse()
 	if _attack_pending:
 		_attack_elapsed += delta
@@ -200,6 +202,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _do_jump() -> void:
+	game.flame.mark("jump")
 	var extra_jump: bool = _jumps_used > 0 and _coyote <= 0.0
 	velocity.y = JUMP_SPEED * (0.92 if extra_jump else 1.0)
 	_jumps_used += 1
@@ -210,6 +213,7 @@ func _do_jump() -> void:
 
 
 func _start_dash(direction: float) -> void:
+	game.flame.mark("dash")
 	_dash_direction = direction if absf(direction) > 0.1 else float(facing)
 	_dash_direction = signf(_dash_direction)
 	facing = int(_dash_direction)
@@ -247,7 +251,10 @@ func _perform_melee() -> void:
 
 
 func _fire_pulse() -> void:
-	energy -= 28.0
+	var empowered: bool = game.flame.module==0 and game.flame.charged>0
+	energy -= 14.0 if empowered else 28.0
+	game.flame.charged = 0
+	game.flame.on_shot()
 	_pulse_cooldown = 0.37
 	var origin: Vector2 = global_position + Vector2(float(facing)*13,-17)
 	var aim: Vector2 = Vector2(facing,0)
@@ -258,7 +265,7 @@ func _fire_pulse() -> void:
 		if offset.x*facing>0 and absf(offset.y)<110 and offset.length()<nearest:
 			nearest = offset.length()
 			aim = offset.normalized()
-	game.spawn_projectile(origin,aim*365,3,false,CYAN)
+	game.spawn_projectile(origin,aim*(440 if empowered else 365),5 if empowered else 3,false,EMBER if empowered else CYAN)
 	game.fx_burst(global_position + Vector2(float(facing) * 15.0, -17.0), LIGHT, 6)
 	game.audio.play_sfx("pulse")
 	game.add_shake(1.2)

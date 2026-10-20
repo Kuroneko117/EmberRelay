@@ -21,6 +21,8 @@ var scenery: Node2D
 var presentation: Node2D
 var menu_ui: Control
 var guide: RefCounted
+var flame: Node2D
+var controls: Node
 var hit_pause: float = 0.0
 var ui_focus: int = 0
 signal stats_changed
@@ -149,6 +151,13 @@ func _ready() -> void:
 	director = DirectorScript.new()
 	director.game = self
 	add_child(director)
+	controls = preload("res://scripts/controls.gd").new()
+	controls.game = self
+	add_child(controls)
+	controls.setup()
+	flame = preload("res://scripts/ember_system.gd").new()
+	flame.game = self
+	add_child(flame)
 	scenery = SceneryScript.new()
 	scenery.game = self
 	scenery.z_index = -1
@@ -205,7 +214,7 @@ func start_game() -> void:
 	_clear_world()
 	campaign.reset()
 	director.potions = 2
-	director.focus = 0
+	flame.reset()
 	director.secrets = 0
 	director.tips_seen.clear()
 	chapter = 0
@@ -253,7 +262,7 @@ func _load_chapter() -> void:
 	if chapter == 0:
 		platforms = [Rect2(-60,300,740,160), Rect2(770,300,675,160), Rect2(1530,300,880,160),
 			Rect2(258,246,106,14), Rect2(435,204,112,14), Rect2(865,241,125,14),
-			Rect2(1185,223,110,14), Rect2(1370,193,100,14), Rect2(1660,248,108,14), Rect2(1870,214,140,14)]
+			Rect2(1185,223,110,14), Rect2(1335,193,135,14), Rect2(1660,248,108,14), Rect2(1870,214,140,14)]
 		lamps = [Vector2(190,300), Vector2(820,300), Vector2(1305,300), Vector2(1770,300), Vector2(2170,300)]
 	elif chapter == 1:
 		platforms = [Rect2(-60,300,600,160), Rect2(625,300,760,160), Rect2(1480,300,480,160), Rect2(2045,300,600,160),
@@ -333,6 +342,7 @@ func _load_chapter() -> void:
 	director.configure()
 	presentation.configure()
 	campaign.sector_loaded()
+	flame.sector_loaded()
 	state = "playing"
 	banner_timer = 3.5
 	transition_alpha = 1
@@ -381,7 +391,10 @@ func _physics_process(delta: float) -> void:
 	if state != "playing" or not is_instance_valid(player):
 		return
 	if hit_pause>0: return
+	if Input.is_action_just_pressed("interact") and flame.try_interact(): return
 	director.tick(delta)
+	if state!="playing": return
+	flame.tick(delta)
 	presentation.tick(delta)
 	if state!="playing": return
 	_update_projectiles(delta)
@@ -450,12 +463,18 @@ func player_melee(area: Rect2, damage: int, knock: Vector2, combo: int) -> void:
 		var size: Vector2 = enemy.combat_size()
 		var enemy_rect: Rect2 = Rect2(enemy.position-Vector2(size.x*0.5,size.y),size)
 		if area.intersects(enemy_rect):
-			enemy.hurt(damage*(1+0.15*mini(2,damage_bonus)),knock)
-			director.hit()
+			var guarded: bool = enemy.kind=="guard" and enemy.mode!="recovery" and combo<3 and (player.position.x-enemy.position.x)*enemy.facing>0
+			var before_health: float = enemy.health
+			enemy.hurt(damage*(1+0.15*mini(2,damage_bonus))*(0.6 if guarded else 1.0),knock)
+			director.hit(true)
+			if combo==3: flame.on_third_hit(enemy)
+			if guarded and combo==1: floating_number(enemy.position-Vector2(0,52),"装甲 · 弹反或绕后",TEAL)
 			presentation.impact(enemy.position-Vector2(0,18),combo==3)
-			floating_number(enemy.position+Vector2(0,-38),str(damage*(1+0.15*mini(2,damage_bonus))),AMBER)
+			floating_number(enemy.position+Vector2(0,-38),str(snappedf(before_health-enemy.health,0.1)),AMBER)
 			hit = true
 	if hit:
+		flame.mark("hit")
+		if combo==3 and flame.module==1: flame.gain(10)
 		add_shake(2.5 if combo<3 else 4.0)
 		player.energy = minf(100,player.energy+2)
 
@@ -565,6 +584,9 @@ func on_player_died() -> void:
 	camera.offset = Vector2.ZERO
 
 func respawn() -> void:
+	flame.charged = 0
+	flame.hover = 0
+	flame.air_spent = false
 	projectiles.clear()
 	director.reset_encounter()
 	boss_awake = false
@@ -620,6 +642,34 @@ func return_to_menu() -> void:
 	_build_menu_scene()
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(controls) and controls.observe(event):
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventJoypadButton and event.pressed:
+		if state=="journal" and event.button_index in [JOY_BUTTON_LEFT_SHOULDER,JOY_BUTTON_RIGHT_SHOULDER]:
+			menu_ui.fields.area_map.pan(-1 if event.button_index==JOY_BUTTON_LEFT_SHOULDER else 1)
+			get_viewport().set_input_as_handled()
+			return
+		if state=="journal" and event.button_index==JOY_BUTTON_RIGHT_STICK:
+			campaign.action("local_back")
+			get_viewport().set_input_as_handled()
+			return
+		if state in ["world_map","journal"] and event.button_index==JOY_BUTTON_BACK:
+			state = "playing" if is_instance_valid(player) else "menu"
+			get_viewport().set_input_as_handled()
+			return
+		if state in ["playing","boss_intro"]:
+			if event.is_action_pressed("pause_game"): state = "paused"; get_viewport().set_input_as_handled(); return
+			if state=="playing" and event.is_action_pressed("journal"): campaign.open_map(); get_viewport().set_input_as_handled(); return
+			if state=="playing" and event.is_action_pressed("local_map"): campaign.action("local_map"); get_viewport().set_input_as_handled(); return
+			if state=="boss_intro" and event.button_index==JOY_BUTTON_A: director.boss_intro = 0; return
+		elif event.button_index in [JOY_BUTTON_B,JOY_BUTTON_START]:
+			var back: InputEventKey = InputEventKey.new()
+			back.pressed = true
+			back.physical_keycode = KEY_ESCAPE
+			menu_ui.consume_shortcut(back)
+			get_viewport().set_input_as_handled()
+			return
 	# Keep the attack event available to the player after removing the message.
 	if state=="playing" and (event.is_action_pressed("attack") or event.is_action_pressed("pulse")):
 		dismiss_messages()
@@ -657,6 +707,9 @@ func dismiss_messages() -> void:
 
 
 func activate_button(action: String) -> void:
+	if action.begins_with("attune_"):
+		flame.equip(int(action.trim_prefix("attune_")))
+		return
 	audio.play_sfx("click")
 	campaign.action(action)
 	director.action(action)
@@ -746,6 +799,17 @@ func _save_record() -> void:
 
 func _record_path() -> String:
 	if OS.has_feature("web"): return "user://save/record.cfg"
+	if OS.has_feature("template"):
+		# Store releases must work in read-only installation directories.
+		var destination: String = "user://save"
+		DirAccess.make_dir_recursive_absolute(destination)
+		var legacy: String = OS.get_executable_path().get_base_dir().path_join("save")
+		for name: String in ["record.cfg","settings.cfg","journey.cfg","controls.cfg"]:
+			var target: String = destination.path_join(name)
+			var old: String = legacy.path_join(name)
+			if not FileAccess.file_exists(target) and FileAccess.file_exists(old):
+				DirAccess.copy_absolute(old,ProjectSettings.globalize_path(target))
+		return destination.path_join("record.cfg")
 	# Scores travel with the project or the portable game folder.
 	var base_path: String = ProjectSettings.globalize_path("res://")
 	if base_path.is_empty():

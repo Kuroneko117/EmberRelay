@@ -123,6 +123,7 @@ func tick(delta: float) -> void:
 	if Input.is_action_just_pressed("heal"):
 		if potions>0 and p.health<p.max_health:
 			potions -= 1
+			game.flame.mark("heal")
 			p.health = mini(p.max_health,p.health+2)
 			p.invulnerable = maxf(p.invulnerable,0.35)
 			ring(p.position-Vector2(0,16),TEAL,55)
@@ -131,6 +132,7 @@ func tick(delta: float) -> void:
 		else: game.show_notice("生命已满" if p.health==p.max_health else "修复剂耗尽 · 中继站可补充")
 	if Input.is_action_just_pressed("burst"):
 		if focus>=100:
+			game.flame.mark("burst")
 			focus = 0
 			p.invulnerable = 0.5
 			ring(p.position-Vector2(0,18),AMBER,180)
@@ -190,6 +192,7 @@ func tick(delta: float) -> void:
 						cleared += 1
 						active_arena = -1
 						game.embers += 4
+						game.flame.gain(18)
 						p.health = mini(p.max_health,p.health+1)
 						game.audio.play_sfx("checkpoint")
 						ring(p.position-Vector2(0,20),TEAL,90)
@@ -198,22 +201,15 @@ func tick(delta: float) -> void:
 	if game.chapter==1:
 		for x: float in [360.0,1555.0,2300.0]:
 			var phase: float = fposmod(hazard_time+x*0.003,4.6)
-			if phase>3.5 and absf(p.position.x-x)<15 and p.position.y>251:
+			if not game.flame.lit.has(1) and phase>3.5 and absf(p.position.x-x)<15 and p.position.y>251:
 				p.hurt(1,Vector2(x,300),80)
-	if game.chapter==0:
-		if p.position.x>260 and not tips_seen.has("parry"):
-			tips_seen.parry = true
-			game.show_notice("长按 J 自动连斩；敌人出手前按 Q 弹反，成功可恢复能量")
-		if p.position.x>600 and not tips_seen.has("heal"):
-			tips_seen.heal = true
-			game.show_notice("F 使用修复剂；蓄能满后按 R 爆发；TAB 查看地图")
 
 func _spawn_wave() -> void:
 	wave += 1
 	var a: Dictionary = arenas[active_arena]
 	arena_members.clear()
 	var types: Array = ["scout","scout"] if game.chapter==0 and active_arena==0 else ["guard","drone"] if wave==1 else ["scout","scout","drone"]
-	if game.chapter==1 and active_arena==0: types = ["guard","scout","drone"]
+	if game.chapter==1 and active_arena==0: types = ["guard","sentry"]
 	if game.chapter>=3: types = ["guard","scout"] if wave==1 else ["sentry","drone","scout"]
 	for i: int in range(types.size()):
 		var x: float = a.left+75+(a.right-a.left-150)*float(i)/maxi(1,types.size()-1)
@@ -225,13 +221,14 @@ func _spawn_wave() -> void:
 	wave_delay = 1.0
 	game.show_notice("封锁区 %d · 第 %d 波" % [active_arena+1,wave])
 
-func hit() -> void:
+func hit(melee: bool=false) -> void:
 	combo += 1
 	combo_time = 3.2
-	focus = minf(100,focus+3)
+	focus = minf(100,focus+(6 if melee else 1))
 	game.hit_pause = maxf(game.hit_pause,0.035)
 
 func parry(source: Vector2) -> void:
+	game.flame.on_parry()
 	focus = minf(100,focus+14)
 	game.player.energy = minf(100,game.player.energy+14)
 	game.player.invulnerable = 0.35
@@ -293,6 +290,7 @@ func save_campaign() -> void:
 	data.secrets = secrets
 	data.scenery = game.presentation.snapshot()
 	data.world = game.campaign.snapshot()
+	data.flame = game.flame.snapshot()
 	var cfg: ConfigFile = ConfigFile.new()
 	cfg.set_value("campaign","version",4)
 	cfg.set_value("campaign","data",data)
@@ -337,6 +335,7 @@ func resume_campaign() -> void:
 	game.safe_position = data.pos
 	game.presentation.restore(data.get("scenery",{}))
 	game.campaign.restore(data.get("world",{}))
+	game.flame.restore(data.get("flame",{}))
 	game.damage_bonus = mini(2,game.damage_bonus)
 	game.pulse_bonus = mini(2,game.pulse_bonus)
 	game.camera.position.x = clampf(data.pos.x,320,game.level_width-320)
@@ -452,9 +451,9 @@ func _draw() -> void:
 			var phase: float = fposmod(hazard_time+x*0.003,4.6)
 			draw_rect(Rect2(x-14,295,28,5),Color("4e6264"))
 			for j: int in range(5): draw_rect(Rect2(x-11+j*5,296,2,3),Color("122b32"))
-			if phase>2.7:
+			if phase>2.7 and not game.flame.lit.has(1):
 				draw_rect(Rect2(x-15,292,30,2),AMBER)
-			if phase>3.5:
+			if phase>3.5 and not game.flame.lit.has(1):
 				for j: int in range(12):
 					var y: float = fposmod(j*7+weather_time*75,51)
 					draw_rect(Rect2(x-10+sin(j+weather_time*10)*6,294-y,14,4),Color(0.7,0.9,0.83,0.35*(1-y/60)))

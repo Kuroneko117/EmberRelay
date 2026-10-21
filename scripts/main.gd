@@ -373,8 +373,6 @@ func _process(delta: float) -> void:
 		elapsed += delta
 		banner_timer = maxf(0,banner_timer-delta)
 		var target_x: float = clampf(player.position.x + player.facing * 38.0,320,level_width-320)
-		if boss_awake and not boss_defeated:
-			target_x = clampf(target_x,campaign.arena_start()+250,level_width-320)
 		camera.position.x = lerpf(camera.position.x,target_x,1-exp(-delta*6))
 		shake = move_toward(shake,0,delta*18)
 		camera.offset = (Vector2(sin(clock*73),sin(clock*91))*shake).round() if director.shake_enabled else Vector2.ZERO
@@ -432,8 +430,6 @@ func _physics_process(delta: float) -> void:
 		audio.play_sfx("boss")
 		audio.set_intensity(1)
 		show_notice("风暴织机已锁定信号 · 看清落雷预警，抓住俯冲后的反击窗口" if chapter==5 else "熔炉看守已苏醒 · 警惕连续震地，抓住锤击后的反击窗口")
-	if boss_awake and not boss_defeated and player.position.x < campaign.arena_start():
-		player.position.x = campaign.arena_start()
 	if Input.is_action_just_pressed("interact") and player.position.x<55 and chapter%3>0:
 		campaign.travel_to(chapter-1,false)
 		return
@@ -451,7 +447,7 @@ func _physics_process(delta: float) -> void:
 			show_notice(guide.gate_hint())
 
 func gate_open() -> bool:
-	return boss_defeated if campaign.is_boss_sector() else director.cleared>=director.arenas.size() and (chapter<3 or presentation.circuit_on)
+	return boss_defeated if campaign.is_boss_sector() else (chapter<3 or presentation.circuit_on)
 
 
 func player_melee(area: Rect2, damage: int, knock: Vector2, combo: int) -> void:
@@ -570,8 +566,9 @@ func on_enemy_killed(enemy: Node) -> void:
 			_add_pickup(enemy.position+Vector2(14,-15),"heal")
 		audio.play_sfx("kill")
 	enemies.erase(enemy)
+	director.patrol_killed(enemy)
 	if not campaign.is_boss_sector() and chapter_kills==kill_goal and gate_open():
-		show_notice("区域已净化 · 前往右侧中继门，按 E 进入下一区域")
+		show_notice("沿主路可继续前进 · 中继门不要求清除所有守卫")
 		audio.play_sfx("checkpoint")
 
 func on_player_hurt() -> void:

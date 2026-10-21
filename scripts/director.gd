@@ -97,6 +97,7 @@ func configure() -> void:
 		"先启动船坞入口地面的 P 号供电箱，靠近按 E。目标方向在右上角，C 打开区域地图。",
 		"信标 1 在旧站台，信标 2 在右侧天线台。按 C 查看标记；跳上平台，靠近按 E。",
 		"风暴织机还在等待投递。看清落雷，再抓住它俯冲落地的空隙。"][game.chapter])
+	populate_patrols()
 	queue_redraw()
 
 func _process(delta: float) -> void:
@@ -164,62 +165,37 @@ func tick(delta: float) -> void:
 			save_campaign()
 	if game.checkpoint_active and absf(p.position.x-game.checkpoint_x)<42 and p.position.y>250 and active_arena<0 and Input.is_action_just_pressed("interact"):
 		game.state = "shop"
-	if not game.campaign.is_boss_sector():
-		if active_arena<0:
-			for i: int in range(arenas.size()):
-				var a: Dictionary = arenas[i]
-				if not a.done and p.position.x>a.left+40 and p.position.x<a.right:
-					active_arena = i
-					wave = 0
-					wave_delay = 0.9
-					say("警报触发。守卫正在封锁这片区域，准备迎战！")
-					game.audio.play_sfx("boss")
-					break
-		else:
-			var a: Dictionary = arenas[active_arena]
-			p.position.x = clampf(p.position.x,a.left+9,a.right-9)
-			for enemy: Node in arena_members:
-				if is_instance_valid(enemy): enemy.position.x = clampf(enemy.position.x,a.left+20,a.right-20)
-			var alive: bool = false
-			for enemy: Node in arena_members:
-				if is_instance_valid(enemy) and not enemy.dead: alive = true
-			if not alive:
-				wave_delay -= delta
-				if wave_delay<=0:
-					if wave < (2 if active_arena>=1 else 1): _spawn_wave()
-					else:
-						a.done = true
-						cleared += 1
-						active_arena = -1
-						game.embers += 4
-						game.flame.gain(18)
-						p.health = mini(p.max_health,p.health+1)
-						game.audio.play_sfx("checkpoint")
-						ring(p.position-Vector2(0,20),TEAL,90)
-						game.show_notice("封锁解除 · 余烬 +4 · 生命 +1")
-						save_campaign()
 	if game.chapter==1:
 		for x: float in [360.0,1555.0,2300.0]:
 			var phase: float = fposmod(hazard_time+x*0.003,4.6)
 			if not game.flame.lit.has(1) and phase>3.5 and absf(p.position.x-x)<15 and p.position.y>251:
 				p.hurt(1,Vector2(x,300),80)
 
-func _spawn_wave() -> void:
-	wave += 1
-	var a: Dictionary = arenas[active_arena]
-	arena_members.clear()
-	var types: Array = ["scout","scout"] if game.chapter==0 and active_arena==0 else ["guard","drone"] if wave==1 else ["scout","scout","drone"]
-	if game.chapter==1 and active_arena==0: types = ["guard","sentry"]
-	if game.chapter>=3: types = ["guard","scout"] if wave==1 else ["sentry","drone","scout"]
-	for i: int in range(types.size()):
-		var x: float = a.left+75+(a.right-a.left-150)*float(i)/maxi(1,types.size()-1)
-		var pos: Vector2 = Vector2(x,210 if types[i]=="drone" else 292)
-		var enemy: Node = game._spawn_enemy(types[i],pos)
-		enemy.cooldown = 1.4
-		arena_members.append(enemy)
-		ring(pos-Vector2(0,18),RED,35)
-	wave_delay = 1.0
-	game.show_notice("封锁区 %d · 第 %d 波" % [active_arena+1,wave])
+func populate_patrols() -> void:
+	# Encounters exist in the world before arrival. No walls or repeated waves.
+	for index: int in range(arenas.size()):
+		var area: Dictionary = arenas[index]
+		var types: Array = ["scout","scout"] if game.chapter==0 and index==0 else ["guard","drone"]
+		if game.chapter==1 and index==0: types = ["guard","sentry"]
+		if game.chapter>=3: types = ["guard","scout","drone"] if index%2==0 else ["sentry","scout"]
+		for i: int in range(types.size()):
+			var x: float = lerpf(area.left+90,area.right-90,float(i)/maxi(1,types.size()-1))
+			var foe: Node = game._spawn_enemy(types[i],Vector2(x,210 if types[i]=="drone" else 292))
+			foe.set_meta("patrol",index)
+			foe.cooldown = 1.4
+
+func patrol_killed(foe: Node) -> void:
+	var index: int = int(foe.get_meta("patrol",-1))
+	if index<0 or index>=arenas.size() or arenas[index].done: return
+	for other: Node in game.enemies:
+		if is_instance_valid(other) and not other.dead and int(other.get_meta("patrol",-1))==index: return
+	arenas[index].done = true
+	cleared += 1
+	game.embers += 4
+	game.flame.gain(18)
+	game.floating_number(game.player.position-Vector2(0,48),"巡逻清除 · 共鸣 +18",TEAL)
+	game.audio.play_sfx("checkpoint")
+	save_campaign()
 
 func hit(melee: bool=false) -> void:
 	combo += 1
@@ -269,7 +245,7 @@ func path(file_name: String) -> String:
 
 func save_campaign() -> void:
 	if game.state in ["menu","dead","victory"]: return
-	if game.test_mode or restoring or not is_instance_valid(game.player) or active_arena>=0: return
+	if game.test_mode or restoring or not is_instance_valid(game.player) : return
 	if game.boss_awake and not game.boss_defeated: return
 	var data: Dictionary = {}
 	for key: String in ["chapter","chapter_kills","total_kills","embers","relics","deaths","damage_bonus","pulse_bonus","bonus_health","elapsed","run_score","checkpoint","checkpoint_active","boss_defeated"]:
@@ -280,7 +256,7 @@ func save_campaign() -> void:
 	data.enemies = []
 	for enemy: Node in game.enemies:
 		if is_instance_valid(enemy) and not enemy.dead:
-			data.enemies.append({"kind":enemy.kind,"pos":enemy.position,"health":enemy.health})
+			data.enemies.append({"kind":enemy.kind,"pos":enemy.position,"health":enemy.health,"patrol":int(enemy.get_meta("patrol",-1))})
 	data.pickups = game.pickups.duplicate(true)
 	data.arenas = arenas.duplicate(true)
 	data.chests = chests.duplicate(true)
@@ -320,6 +296,7 @@ func resume_campaign() -> void:
 	for saved: Dictionary in data.enemies:
 		var enemy: Node = game._spawn_enemy(saved.kind,saved.pos)
 		enemy.health = saved.health
+		enemy.set_meta("patrol",int(saved.get("patrol",-1)))
 		if saved.kind in ["boss","tempest"]: game.boss = enemy
 	game.pickups.assign(data.pickups)
 	arenas.assign(data.arenas)
@@ -435,11 +412,6 @@ func _draw() -> void:
 				draw_string(FONT,p-Vector2(28,25),"E  补给箱",HORIZONTAL_ALIGNMENT_LEFT,-1,10,AMBER)
 	if game.checkpoint_active and absf(game.player.position.x-game.checkpoint_x)<45 and active_arena<0:
 		draw_string(FONT,Vector2(game.checkpoint_x-31,239),"E  修复工坊",HORIZONTAL_ALIGNMENT_LEFT,-1,10,TEAL)
-	if active_arena>=0:
-		var a: Dictionary = arenas[active_arena]
-		for x: float in [a.left,a.right]:
-			for y: int in range(164,300,6):
-				draw_rect(Rect2(x,y,3,4),Color(RED,0.55+sin(weather_time*7)*0.15))
 	for ring_data: Dictionary in rings:
 		var t: float = ring_data.life/0.55
 		draw_arc(ring_data.pos,ring_data.radius*(1-t)+3,0,TAU,48,Color(ring_data.color,t),2+t*3)
@@ -500,7 +472,7 @@ func draw_hud(h: Node2D) -> void:
 					h.draw_rect(Rect2(160+chest.pos.x/game.level_width*320,123+(chest.pos.y-170)*0.35,4,4),Color("dcb47c"))
 			h._center("● 你的位置     青色：中继站     方块：补给 / 出口",194,9,TEAL)
 			h._center("记忆 %d / 18    补给箱 %d / 15    已击败 %d"%[game.relics,secrets,game.total_kills],213,12)
-			var task: String = "击败"+game.campaign.BOSSES[game.chapter/3] if game.campaign.is_boss_sector() else "封锁解除 %d / %d · 启动机关，抵达中继门"%[cleared,arenas.size()]
+			var task: String = "击败"+game.campaign.BOSSES[game.chapter/3] if game.campaign.is_boss_sector() else "自由探索 %d / %d · 启动机关，抵达中继门"%[cleared,arenas.size()]
 			h._center("当前任务："+task,241,10,AMBER)
 			h._center("E 开箱 / 工坊    F 修复    Q 弹反    R 爆发",269,10,TEAL)
 		return
@@ -515,7 +487,7 @@ func draw_hud(h: Node2D) -> void:
 		h._text("%02d"%combo,Vector2(19,111),24,AMBER)
 		h._text("连击 / "+("S" if combo>=20 else "A" if combo>=10 else "B"),Vector2(56,107),10,TEAL)
 	if active_arena>=0:
-		h._center("封锁区域  %d  /  第 %d 波"%[active_arena+1,maxi(1,wave)],68,10,RED)
+		h._center("巡逻区域  %d  /  第 %d 波"%[active_arena+1,maxi(1,wave)],68,10,RED)
 	if radio_time>0 and game.presentation.sector_title<=0 and game.notice_timer<=0 and active_arena<0 and not game.boss_awake:
 		h.draw_rect(Rect2(157,281,326,46),Color(0.04,0.12,0.17,0.94))
 		h.draw_rect(Rect2(157,281,2,46),TEAL)

@@ -98,7 +98,7 @@ func capture_sector() -> Dictionary:
 	if not is_instance_valid(game.player): return {}
 	var foes: Array = []
 	for e: Node in game.enemies:
-		if is_instance_valid(e) and not e.dead: foes.append({"kind":e.kind,"pos":e.position,"hp":e.health})
+		if is_instance_valid(e) and not e.dead: foes.append({"kind":e.kind,"pos":e.position,"hp":e.health,"patrol":int(e.get_meta("patrol",-1))})
 	return {"enemies":foes,"pickups":game.pickups.duplicate(true),"arenas":game.director.arenas.duplicate(true),"chests":game.director.chests.duplicate(true),
 		"cleared":game.director.cleared,"boss_defeated":game.boss_defeated,"rest":rest_points.duplicate(),"scenery":game.presentation.snapshot(),"checkpoint":game.checkpoint,"checkpoint_active":game.checkpoint_active,"checkpoint_x":game.checkpoint_x}
 
@@ -111,6 +111,7 @@ func restore_sector(data: Dictionary) -> void:
 	for saved: Dictionary in data.enemies:
 		var foe: Node = game._spawn_enemy(saved.kind,saved.pos)
 		foe.health = saved.hp
+		foe.set_meta("patrol",int(saved.get("patrol",-1)))
 		if saved.kind in ["boss","tempest"]: game.boss = foe
 	game.pickups.assign(data.pickups)
 	game.director.arenas.assign(data.arenas)
@@ -125,9 +126,6 @@ func restore_sector(data: Dictionary) -> void:
 
 func travel_to(destination: int, from_left: bool=true) -> void:
 	if destination<0 or destination>5 or destination/3>unlocked: return
-	if is_instance_valid(game.player) and (game.director.active_arena>=0 or (game.boss_awake and not game.boss_defeated)):
-		game.show_notice("封锁解除后才能离开这片区域")
-		return
 	var hp: int = game.player.health if is_instance_valid(game.player) else 6+game.bonus_health
 	var charges: int = game.director.potions
 	if is_instance_valid(game.player): sector_states[game.chapter] = capture_sector()

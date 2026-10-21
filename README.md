@@ -1,4 +1,4 @@
-# 余烬信使 · 共鸣 / Ember Relay 6.0
+# 余烬信使 · 远行 / Ember Relay 6.1
 
 **在线试玩：[余烬信使](https://kuroneko117.github.io/EmberRelay/)**
 
@@ -6,7 +6,7 @@
 
 ![工业遗迹中的余烬航线](https://kuroneko117.github.io/EmberRelay/assets/cover.png)
 
-两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。共鸣连接战斗与探索：点亮支路中继，选择弹反强化、第三击破甲或空中悬停装配。支持手柄、键盘改键、可缩放区域图与旧存档。
+两章六区的像素动作冒险，包含熔炉看守与风暴织机两位首领。取消清怪封锁，支持自由推进、绕行巡逻和 Boss 战撤退。共鸣连接战斗与探索，点亮支路中继可选择不同装配。支持手柄、键盘改键、可缩放区域图与旧存档。
 
 本仓库由 GitHub Actions 构建浏览器试玩版。首次发布请在 Settings → Pages → Source 选择 GitHub Actions。在线试玩链接显示在 Actions 部署结果与 Deployments 中。
 

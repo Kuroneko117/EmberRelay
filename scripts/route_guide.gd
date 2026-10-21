@@ -25,8 +25,6 @@ func current() -> Dictionary:
 		if game.boss_defeated: return _target("gate","投递火种",Vector2(game.portal_x,300),"终点门旁按 E · 完成本段航线")
 		if game.boss_awake: return _target("combat","击败"+game.campaign.BOSSES[game.chapter/3],game.campaign.boss_home(),"避开预警 · 在守卫恢复时反击")
 		return _target("boss","进入守卫区域",Vector2(game.campaign.arena_start()+30,300),"继续向右进入竞技场 · 无需寻找开关")
-	if game.director.active_arena>=0:
-		return _target("combat","封锁 %d · 第 %d 波"%[game.director.active_arena+1,maxi(1,game.director.wave)],game.player.position,"清除本区守卫后继续探索")
 	var closest: Dictionary = {}
 	var distance: float = INF
 	for device: Dictionary in devices():
@@ -39,9 +37,6 @@ func current() -> Dictionary:
 		var result: Dictionary = _target("device",closest.label,closest.pos,closest.detail)
 		result.id = closest.id
 		return result
-	for i: int in range(game.director.arenas.size()):
-		var arena: Dictionary = game.director.arenas[i]
-		if not arena.done: return _target("seal","前往封锁区 %d · 已清 %d/%d"%[i+1,game.director.cleared,game.director.arenas.size()],Vector2(arena.left+65,300),"沿主路前进 · 清除封锁区守卫")
 	return _target("gate","前往"+("风暴之眼" if game.chapter==4 else game.chapter_names[game.chapter+1]),Vector2(game.portal_x,300),"右侧中继门旁按 E · 前往下一区域")
 
 func _target(kind: String,title: String,pos: Vector2,detail: String) -> Dictionary:
@@ -119,5 +114,5 @@ func gate_hint() -> String:
 	if target.kind=="device":
 		if game.chapter==3: return "中继门未供电 · P 号开关在船坞入口地面。\n按 C 查看位置，靠近控制箱按 E。"
 		return "信标仅接通 %d/2 · 还需校准%s。\n按 C 查看位置，跳上标记平台后按 E。"%[relay_count(),target.title]
-	if target.kind=="seal" or target.kind=="combat": return "中继门等待解除封锁 %d / %d。按 C 查看当前目标。"%[game.director.cleared,game.director.arenas.size()]
+	if target.kind=="combat": return "观察预警，必要时可以退回中继站调整装配。"
 	return target.detail

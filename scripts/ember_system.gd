@@ -87,7 +87,7 @@ func on_shot() -> void:
 		game.fx_burst(game.player.position+Vector2(0,2),TEAL,9)
 
 func safe_to_use() -> bool:
-	return game.director.active_arena<0 and not (game.boss_awake and not game.boss_defeated)
+	return true
 
 func try_interact() -> bool:
 	var distance: float = game.player.position.distance_to(position_for())
@@ -95,7 +95,7 @@ func try_interact() -> bool:
 	for chest: Dictionary in game.director.chests:
 		if not chest.open and game.player.position.distance_to(chest.pos)<distance: return false
 	if not safe_to_use():
-		game.show_notice("先解除当前封锁，再接通支路中继")
+		game.show_notice("靠近支路中继即可装配")
 		return true
 	if not lit.has(game.chapter) and game.director.focus<COST:
 		game.show_notice("支路中继需要 60 共鸣 · 近战与弹反蓄能 · 不影响主路通行")

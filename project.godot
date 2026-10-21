@@ -14,8 +14,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="余烬信使 · 共鸣 6.0 / EMBER RELAY"
-config/version="6.0.0"
+config/name="余烬信使 · 远行 6.1 / EMBER RELAY"
+config/version="6.1.0"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="EmberRelay"
 run/main_scene="res://main.tscn"

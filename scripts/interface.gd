@@ -119,6 +119,11 @@ func _icon(parent: Node,which: String,side: int=22,color: Color=T.PAPER) -> Text
 	var item_path: String = "res://assets/ui/items/"+which+".png"
 	var raster: bool = ResourceLoader.exists(item_path)
 	node.texture = load(item_path if raster else "res://assets/ui/"+which+".svg")
+	if raster:
+		var cropped: AtlasTexture = AtlasTexture.new()
+		cropped.atlas = node.texture
+		cropped.region = node.texture.get_image().get_used_rect()
+		node.texture = cropped
 	node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	node.custom_minimum_size = Vector2(side,side)
@@ -210,10 +215,9 @@ func _modal(width: int=540,height: int=292) -> VBoxContainer:
 	panel.custom_minimum_size = Vector2(width,height)
 	return _vbox(panel,8)
 
-func _header(parent: Node,tag: String,title: String) -> HBoxContainer:
+func _header(parent: Node,_tag: String,title: String) -> HBoxContainer:
 	var row: HBoxContainer = _hbox(parent)
 	var column: VBoxContainer = _vbox(row,2)
-	_label(column,tag,9,T.TEAL)
 	_label(column,title,23)
 	_spacer(row,false)
 	return row
@@ -222,9 +226,9 @@ func _title() -> void:
 	var row: HBoxContainer = _hbox(_margin(screen,26))
 	var left: VBoxContainer = _vbox(row,4)
 	left.custom_minimum_size.x = 260
-	_label(left,"LIGHTHOUSE  /  信使终端 07",9,T.TEAL)
+	_label(left,"赤木作品",9,T.TEAL)
 	_label(left,"余烬信使",40)
-	_label(left,"E M B E R   R E L A Y",16,T.GOLD)
+	_label(left,"EMBER RELAY",16,T.GOLD)
 	_label(left,"长夜将尽，沿着余光继续前行。",11,T.PAPER)
 	_label(left,"两条航线 · 六处遗迹 · 十八段记忆",9,T.MUTED)
 	_spacer(left)
@@ -242,7 +246,7 @@ func _title() -> void:
 	_spacer(row,false)
 	var right: VBoxContainer = _vbox(row)
 	right.alignment = BoxContainer.ALIGNMENT_END
-	_label(right,"THE LIVING EMBER / 06",9,T.TEAL)
+	_label(right,"像素动作冒险",9,T.TEAL)
 	_label(right,"信号在线  ·  最佳 %06d"%game.best_score,9,T.PAPER)
 
 func _atlas() -> void:
@@ -303,11 +307,11 @@ func _hud() -> void:
 	if not is_instance_valid(game.player): return
 	var top: MarginContainer = _margin(screen,12)
 	top.anchor_bottom = 0
-	top.offset_bottom = 66
+	top.offset_bottom = 54
 	var row: HBoxContainer = _hbox(top,10)
 	var identity: PanelContainer = _panel(row)
-	identity.custom_minimum_size.x = 181
-	identity.add_theme_stylebox_override("panel",T.flat(Color(0.035,0.08,0.10,0.90),Color("476464"),1))
+	identity.custom_minimum_size.x = 152
+	identity.add_theme_stylebox_override("panel",T.flat(Color(0.035,0.08,0.10,0.90),Color.TRANSPARENT,0))
 	var info: HBoxContainer = _hbox(identity,4)
 	var avatar: TextureRect = TextureRect.new()
 	var texture: AtlasTexture = AtlasTexture.new()
@@ -316,7 +320,7 @@ func _hud() -> void:
 	avatar.texture = texture
 	avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	avatar.custom_minimum_size = Vector2(26,37)
+	avatar.custom_minimum_size = Vector2(21,30)
 	info.add_child(avatar)
 	var health: VBoxContainer = _vbox(info,2)
 	health.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -333,23 +337,26 @@ func _hud() -> void:
 	_icon(count_row,"memory",15,T.TEAL)
 	fields.memories = _label(count_row,"0/18",10,T.PAPER)
 	fields.clock = _label(resources,"",9,T.MUTED)
+	fields.clock.visible = false
 	_spacer(row,false)
 	var goal_panel: PanelContainer = _panel(row)
-	goal_panel.custom_minimum_size.x = 198
+	goal_panel.custom_minimum_size.x = 174
 	goal_panel.add_theme_stylebox_override("panel",T.flat(Color(0.035,0.08,0.1,0.9)))
 	var goal: VBoxContainer = _vbox(goal_panel,1)
-	_label(goal,"%02d  /  %s"%[game.chapter/3+1,game.chapter_names[game.chapter]],15,T.PAPER)
+	_label(goal,game.chapter_names[game.chapter],12,T.PAPER)
 	fields.goal = _label(goal,"",9,T.TEAL)
 	var bottom: MarginContainer = _margin(screen,12)
+	bottom.add_theme_constant_override("margin_top",0)
+	bottom.add_theme_constant_override("margin_bottom",0)
 	bottom.anchor_top = 1
-	bottom.offset_top = -52
+	bottom.offset_top = -48
 	var lower: HBoxContainer = _hbox(bottom,5)
 	for info_key: Array in [["Q","parry"],["F","repair"],["R","burst"]]:
 		var slot: PanelContainer = _panel(lower)
-		slot.custom_minimum_size = Vector2(39,37)
+		slot.custom_minimum_size = Vector2(32,29)
 		slot.add_theme_stylebox_override("panel",T.material("slot"))
 		var box: VBoxContainer = _vbox(slot,0)
-		_icon(box,info_key[1],17,T.TEAL if info_key[0]=="Q" else T.GOLD)
+		_icon(box,info_key[1],14,T.TEAL if info_key[0]=="Q" else T.GOLD)
 		var key: Label = _label(box,info_key[0],8,T.PAPER)
 		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		if info_key[0]=="F": fields.repairs = key
@@ -429,7 +436,7 @@ func _sync_stats() -> void:
 		fields.burst.text = game.controls.prompt("burst")+(" 就绪" if game.director.focus>=100 else "")
 		fields.flame_status.text = "共鸣 %d"%int(game.director.focus)+(" · 返流" if game.flame.charged>0 else "")
 		fields.equipped.text = game.flame.NAMES[game.flame.module] if game.flame.module>=0 else "支路中继 / 待装配"
-		fields.controls_hint.text = "%s 斩  %s 射  %s 冲刺\n%s 区域图  %s 航线"%[game.controls.prompt("attack"),game.controls.prompt("pulse"),game.controls.prompt("dash"),game.controls.prompt("local_map"),game.controls.prompt("journal")]
+		fields.controls_hint.text = "%s 地图 · %s 航线\n设置中可查看与修改操作"%[game.controls.prompt("local_map"),game.controls.prompt("journal")]
 		fields.lesson.text = game.flame.lesson_text
 		fields.lesson.visible = not game.flame.lesson_text.is_empty()
 		var target: Dictionary = game.guide.current()
@@ -496,7 +503,7 @@ func _shop() -> void:
 	for index: int in range(3):
 		var card: PanelContainer = _panel(cards)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color("3c565d"),1,8))
+		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color.TRANSPARENT,0,8))
 		var column: VBoxContainer = _vbox(card,5)
 		_label(column,["01 / 维护补给","02 / 近战强化","03 / 远程强化"][index],8,T.MUTED)
 		_item_art(column,["repair","blade","pulse"][index],T.GOLD if index<2 else T.TEAL)
@@ -598,7 +605,7 @@ func _attunement() -> void:
 	for index: int in range(3):
 		var card: PanelContainer = _panel(cards)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),T.TEAL if game.flame.module==index else Color("3c565d"),1,8))
+		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color.TRANSPARENT,0,8))
 		var column: VBoxContainer = _vbox(card,4)
 		_label(column,["01 / 弹反反击","02 / 连斩破阵","03 / 空中机动"][index],8,T.MUTED)
 		_item_art(column,game.flame.ITEMS[index],T.TEAL if index==0 else T.GOLD).custom_minimum_size.y = 53
@@ -642,7 +649,7 @@ func _reward() -> void:
 		var card: PanelContainer = _panel(cards)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var accent: Color = T.TEAL if index==2 else T.GOLD
-		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color("3c565d"),1,9))
+		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color.TRANSPARENT,0,9))
 		var column: VBoxContainer = _vbox(card,3)
 		_label(column,["M-01 / 近战组件","V-02 / 生存组件","P-03 / 远程组件"][index],9,accent)
 		var art: Control = _item_art(column,["blade","vital","pulse"][index],accent)
@@ -713,7 +720,7 @@ func _journal() -> void:
 	map.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(map)
 	fields.area_map = map
-	_label(box,"● 当前位置   ◇ 目标   青色中继站   金色补给 / 机关   暗红未解封锁",8,T.TEAL)
+	_label(box,"● 当前位置   ◇ 目标   青色中继站   金色补给 / 机关   巡逻可绕行",8,T.TEAL)
 	_label(box,_objective()+"  ·  "+game.guide.direction(game.guide.current()),11,T.GOLD)
 	var footer: HBoxContainer = _hbox(box)
 	_label(footer,"LB / RB 平移 · 方向键选择缩放按钮\nA 确认 · B / RS 返回" if game.controls.pad_active else "拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)

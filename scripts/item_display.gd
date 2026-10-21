@@ -7,7 +7,11 @@ var age: float = 0
 var selected: bool = false
 
 func _ready() -> void:
-	texture = load("res://assets/ui/items/"+item+".png")
+	var source: Texture2D = load("res://assets/ui/items/"+item+".png")
+	var atlas: AtlasTexture = AtlasTexture.new()
+	atlas.atlas = source
+	atlas.region = source.get_image().get_used_rect()
+	texture = atlas
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	resized.connect(queue_redraw)
@@ -18,15 +22,9 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var center: Vector2 = size*0.5
-	var radius: float = minf(size.x*0.35,31)
-	draw_circle(center,32,Color(accent,0.035 if not selected else 0.08))
-	draw_arc(center,radius,0,TAU,48,Color(accent,0.18),1)
-	draw_line(Vector2(center.x-25,size.y-6),Vector2(center.x+25,size.y-6),Color(accent,0.35),1)
-	for side: int in [-1,1]:
-		var p: Vector2 = center+Vector2(side*(radius+7),0)
-		draw_line(p,p+Vector2(-side*4,-4),Color(accent,0.6),1)
-		draw_line(p,p+Vector2(-side*4,4),Color(accent,0.6),1)
 	if is_instance_valid(texture):
-		var zoom: int = 3 if size.y>=65 else 2
-		var extent: Vector2 = Vector2(24,24)*zoom
-		draw_texture_rect(texture,Rect2((center-extent*0.5+Vector2(0,roundf(sin(age*1.7)*1.5))).round(),extent),false)
+		var zoom: int = clampi(int(minf((size.x-20)/texture.get_width(),(size.y-10)/texture.get_height())),1,4)
+		var extent: Vector2 = texture.get_size()*zoom
+		var p: Vector2 = (center-extent*0.5).round()
+		draw_texture_rect(texture,Rect2(p,extent),false)
+		if selected: draw_line(Vector2(center.x-18,size.y-2),Vector2(center.x+18,size.y-2),accent,2)

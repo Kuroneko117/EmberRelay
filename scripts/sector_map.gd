@@ -65,7 +65,7 @@ func _draw() -> void:
 		var width: float = (arena.right-arena.left)*sx
 		var col: Color = Color("4b8b80") if arena.done else Color("9b6758")
 		draw_rect(Rect2(start.x,27,width,size.y-27),Color(col,0.065))
-		draw_string(FONT,Vector2(start.x+4,size.y-5),"封锁 %d · %s"%[i+1,"解除" if arena.done else "未解除"],HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color(col,0.85))
+		draw_string(FONT,Vector2(start.x+4,size.y-5),"巡逻 %d · %s"%[i+1,"已清除" if arena.done else "可绕行"],HORIZONTAL_ALIGNMENT_LEFT,-1,8,Color(col,0.85))
 	for platform: Rect2 in game.platforms:
 		var p: Vector2 = point(platform.position)
 		var width: float = platform.size.x*sx

@@ -14,7 +14,8 @@ static func frames_for(which: String) -> SpriteFrames:
 	var names: Array[String] = ["idle","move","attack","warning","hurt","death"]
 	if which=="boss": names.append_array(["shot","rise","fall"])
 	for clip: String in names:
-		var texture: Texture2D = load("res://assets/art/units/%s-%s.png"%[which,clip])
+		var path: String = "res://assets/studio/patrol/%s.png"%clip if which=="guard" and ResourceLoader.exists("res://assets/studio/patrol/idle.png") else "res://assets/art/units/%s-%s.png"%[which,clip]
+		var texture: Texture2D = load(path)
 		frames.add_animation(clip)
 		frames.set_animation_loop(clip,clip not in ["death","hurt"])
 		frames.set_animation_speed(clip,12 if clip in ["attack","death","move"] else 7)
@@ -22,7 +23,7 @@ static func frames_for(which: String) -> SpriteFrames:
 			if which=="boss" and clip=="warning" and index%2==0: continue
 			var tile: AtlasTexture = AtlasTexture.new()
 			tile.atlas = texture
-			tile.region = Rect2(index*80,0,80,80)
+			tile.region = Rect2(index*80,0,80,64 if which=="guard" and texture.get_height()==64 else 80)
 			frames.add_frame(clip,tile)
 	library[which] = frames
 	return frames
@@ -33,7 +34,7 @@ func configure(owner_unit: Node,which: String) -> void:
 	sprite_frames = frames_for(which)
 	offset = Vector2(0,-24)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var sizes: Dictionary = {"scout":1.2,"guard":1.45,"sentry":1.25,"drone":1.0,"boss":1.25,"tempest":1.85}
+	var sizes: Dictionary = {"scout":1.2,"guard":1.0,"sentry":1.25,"drone":1.0,"boss":1.25,"tempest":1.85}
 	scale = Vector2.ONE*float(sizes[which])
 	animation_finished.connect(_finished)
 	play("idle")
@@ -44,7 +45,7 @@ func show_attack(duration: float=0.3) -> void:
 
 func _process(_delta: float) -> void:
 	if not is_instance_valid(unit): return
-	flip_h = unit.facing<0
+	flip_h = unit.facing>0 if family=="guard" and ResourceLoader.exists("res://assets/studio/patrol/idle.png") else unit.facing<0
 	if unit.dead:
 		if not dying:
 			dying = true
@@ -73,7 +74,9 @@ func _process(_delta: float) -> void:
 			if unit.attack_kind=="rush": clip = "move"
 			elif unit.attack_kind=="fan": clip = "shot"
 			elif unit.attack_kind=="slam": progress = 0.38+(1-clampf(unit.timer/0.22,0,1))*0.62
-	elif unit.stun>0 and unit.mode!="recovery": clip = "hurt"
+	elif (unit.stun>0 and unit.mode!="recovery") or (family=="guard" and unit.flash>0):
+		clip = "hurt"
+		if family=="guard": progress = 1-clampf(unit.flash/0.13,0,1)
 	if family=="tempest" and unit.mode=="idle": clip = "move"
 	if shot_left>0:
 		clip = "shot" if family=="boss" else "attack"

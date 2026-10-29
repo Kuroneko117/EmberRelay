@@ -14,11 +14,11 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="余烬信使 · 远行 6.1 / EMBER RELAY"
-config/version="6.1.0"
-config/use_custom_user_dir=true
-config/custom_user_dir_name="EmberRelay"
+config/name="余烬信使 · 雨城邮路"
+config/version="6.5.0-dual-preview"
 run/main_scene="res://main.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="EmberRelayDualPreview"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0.035, 0.065, 0.1, 1)
 boot_splash/show_image=false
@@ -33,9 +33,18 @@ window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 window/stretch/scale_mode.web="fractional"
+window/stretch/scale_mode.mobile="fractional"
+window/handheld/orientation=4
+window/handheld/immersive_mode=true
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
+pointing/emulate_touch_from_mouse=false
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

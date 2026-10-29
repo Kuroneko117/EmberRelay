@@ -1,0 +1,122 @@
+{
+  "frames": [
+    {
+      "filename": "muzzle 0.aseprite",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 25
+    },
+    {
+      "filename": "muzzle 1.aseprite",
+      "frame": {
+        "x": 32,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 30
+    },
+    {
+      "filename": "muzzle 2.aseprite",
+      "frame": {
+        "x": 64,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 35
+    },
+    {
+      "filename": "muzzle 3.aseprite",
+      "frame": {
+        "x": 96,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      },
+      "duration": 35
+    }
+  ],
+  "meta": {
+    "app": "https://www.aseprite.org/",
+    "version": "1.3.18.6-dev",
+    "image": "muzzle.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 128,
+      "h": 32
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [
+      {
+        "name": "Actual art / weapon VFX / muzzle",
+        "opacity": 255,
+        "blendMode": "normal"
+      }
+    ],
+    "slices": [],
+    "pivot": {
+      "x": 8,
+      "y": 16
+    },
+    "frame_size": {
+      "w": 32,
+      "h": 32
+    },
+    "facing": "right",
+    "pixel_filter": "nearest"
+  }
+}

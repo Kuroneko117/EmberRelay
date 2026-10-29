@@ -6,6 +6,12 @@ const PORTRAIT = preload("res://scripts/unit_portrait.gd")
 const SECTOR_MAP = preload("res://scripts/sector_map.gd")
 const WORLD_ROUTE = preload("res://scripts/world_route.gd")
 const ITEM_DISPLAY = preload("res://scripts/item_display.gd")
+const SIGNAL_ART = preload("res://scripts/signal_art.gd")
+const SIGNAL_BUTTON = preload("res://scripts/signal_button.gd")
+const SEGMENTED_METER = preload("res://scripts/segmented_meter.gd")
+const MODULE_ART = ["coil","ratchet","thruster"]
+const MODULE_ROLES = ["弹反反击","连斩破阵","空中机动"]
+var preview_module: int = 0
 var game: Node
 var screen: Control
 var default_button: Button
@@ -31,7 +37,11 @@ func _ready() -> void:
 	game.radio_received.connect(_radio)
 	game.messages_dismissed.connect(_dismiss_toast)
 	game.controls.changed.connect(_controls_changed)
+	get_viewport().size_changed.connect(_queue_refresh)
 	_refresh()
+
+func _mobile() -> bool:
+	return is_instance_valid(game.controls) and game.controls.touch_active
 
 func _queue_refresh() -> void:
 	if queued: return
@@ -54,6 +64,11 @@ func _refresh() -> void:
 	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(screen)
+	if _mobile() and is_instance_valid(game.touch_controls):
+		var safe: Rect2 = game.touch_controls.safe_rect()
+		screen.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+		screen.position = safe.position
+		screen.size = safe.size
 	match game.state:
 		"menu":
 			if game.menu_help: _help()
@@ -87,7 +102,7 @@ func _controls_changed() -> void:
 func _label(parent: Node,text: String,font_size: int=11,color: Color=T.PAPER,wrap: bool=false) -> Label:
 	var node: Label = Label.new()
 	node.text = text
-	node.add_theme_font_size_override("font_size",font_size)
+	node.add_theme_font_size_override("font_size",maxi(11,font_size) if _mobile() else font_size)
 	node.add_theme_color_override("font_color",color)
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if wrap: node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -141,14 +156,12 @@ func _item_art(parent: Node,which: String,accent: Color=T.GOLD) -> Control:
 	return art
 
 func _button(parent: Node,text: String,action: String,primary: bool=false,height: int=30) -> Button:
-	var node: Button = Button.new()
+	var node: Button = SIGNAL_BUTTON.new() if primary else Button.new()
 	node.name = "Action_"+action
-	node.text = text
-	node.custom_minimum_size = Vector2(0,height)
+	node.text = text.trim_suffix("→").strip_edges() if primary else text
+	node.custom_minimum_size = Vector2(0,maxi(34,height) if _mobile() else height)
+	if _mobile(): node.add_theme_font_size_override("font_size",12)
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	if primary:
-		node.add_theme_stylebox_override("normal",T.material("button-active"))
-		node.add_theme_color_override("font_color",Color("fff0d0"))
 	node.pressed.connect(_pressed.bind(action))
 	node.focus_entered.connect(_focus_sound)
 	parent.add_child(node)
@@ -157,6 +170,11 @@ func _button(parent: Node,text: String,action: String,primary: bool=false,height
 	return node
 
 func _pressed(action: String) -> void:
+	if action=="route_preview": game.start_route_preview(); return
+	if action.begins_with("attune_"):
+		_select_module(int(action.trim_prefix("attune_")))
+		return
+	if action=="equip_preview": game.flame.equip(preview_module); return
 	if action=="controls": game.state = "controls"; return
 	if action=="controls_back": game.controls.capture_action = ""; game.state = "settings"; return
 	if action=="reset_keys": game.controls.reset_bindings(); return
@@ -212,42 +230,95 @@ func _modal(width: int=540,height: int=292) -> VBoxContainer:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	screen.add_child(center)
 	var panel: PanelContainer = _panel(center)
-	panel.custom_minimum_size = Vector2(width,height)
+	panel.custom_minimum_size = Vector2(minf(width,screen.size.x-20) if _mobile() else width,minf(height,screen.size.y-16) if _mobile() else height)
 	return _vbox(panel,8)
 
 func _header(parent: Node,_tag: String,title: String) -> HBoxContainer:
 	var row: HBoxContainer = _hbox(parent)
 	var column: VBoxContainer = _vbox(row,2)
-	_label(column,title,23)
+	_display(column,title,25)
 	_spacer(row,false)
 	return row
 
+func _display(parent: Node,text: String,font_size: int=28,color: Color=T.PAPER) -> Label:
+	var label: Label = _label(parent,text,font_size,color)
+	label.add_theme_font_override("font",T.DISPLAY)
+	return label
+
+func _rule(parent: Node,vertical: bool=false) -> ColorRect:
+	var rule: ColorRect = ColorRect.new()
+	rule.color = T.STEEL
+	rule.custom_minimum_size = Vector2(1,1)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if vertical: rule.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	else: rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(rule)
+	return rule
+
+func _signal_art(parent: Node,asset: String,extent: Vector2,zoom: int=1) -> Control:
+	var art: Control = SIGNAL_ART.new()
+	art.asset = asset
+	art.magnification = zoom
+	art.custom_minimum_size = extent
+	parent.add_child(art)
+	return art
+
+func _link(parent: Node,text: String,action: String,font_size: int=9) -> Button:
+	var link: Button = _button(parent,text,action,false,16)
+	link.add_theme_font_size_override("font_size",11 if _mobile() else font_size)
+	if _mobile(): link.custom_minimum_size.x = 44
+	for state: String in ["normal","pressed","disabled"]: link.add_theme_stylebox_override(state,T.flat(Color.TRANSPARENT))
+	link.add_theme_stylebox_override("hover",T.flat(Color(0.47,0.78,0.71,0.09)))
+	link.add_theme_color_override("font_color",T.MUTED)
+	link.add_theme_color_override("font_hover_color",T.PAPER)
+	return link
+
 func _title() -> void:
-	var row: HBoxContainer = _hbox(_margin(screen,26))
-	var left: VBoxContainer = _vbox(row,4)
-	left.custom_minimum_size.x = 260
-	_label(left,"赤木作品",9,T.TEAL)
-	_label(left,"余烬信使",40)
-	_label(left,"EMBER RELAY",16,T.GOLD)
-	_label(left,"长夜将尽，沿着余光继续前行。",11,T.PAPER)
-	_label(left,"两条航线 · 六处遗迹 · 十八段记忆",9,T.MUTED)
+	var margin: MarginContainer = _margin(screen,28)
+	margin.add_theme_constant_override("margin_top",22)
+	margin.add_theme_constant_override("margin_bottom",32)
+	var root_box: HBoxContainer = _hbox(margin,0)
+	var left: VBoxContainer = _vbox(root_box,0)
+	left.custom_minimum_size.x = 220
+	var stamp: HBoxContainer = _hbox(left,7)
+	stamp.custom_minimum_size.y = 27
+	_signal_art(stamp,"signal-badge",Vector2(28,27))
+	var byline: VBoxContainer = _vbox(stamp,4)
+	byline.alignment = BoxContainer.ALIGNMENT_CENTER
+	_label(byline,"赤木作品",10,T.TEAL)
+	_rule(byline).custom_minimum_size.x = 42
+	var gap: Control = Control.new(); gap.custom_minimum_size.y = 5; left.add_child(gap)
+	var brand: HBoxContainer = _hbox(left,43)
+	brand.custom_minimum_size.y = 129
+	var nameplate: Label = _display(brand,"余烬\n信使",59)
+	nameplate.add_theme_constant_override("line_spacing",0)
+	var english: VBoxContainer = _vbox(brand,2)
+	english.alignment = BoxContainer.ALIGNMENT_CENTER
+	_rule(english).custom_minimum_size = Vector2(23,2)
+	_label(english,"E M B E R",10,T.GOLD)
+	_label(english,"R E L A Y",10,T.GOLD)
+	var quote: VBoxContainer = _vbox(left,5)
+	_label(quote,"长夜将尽，沿着余光继续前行。",10,T.PAPER)
+	_label(quote,"一束火种。两条穿越废城的航线。",9,T.MUTED)
 	_spacer(left)
-	var first: Button = _button(left,"继续旅程    →" if game.director.saved_available else "展开航线    →","continue" if game.director.saved_available else "start",true,34)
-	first.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	var links: HBoxContainer = _hbox(left,5)
-	for info: Array in [["信使手册","help"],["守卫档案","bestiary"],["设置","settings"]]:
-		var control: Button = _button(links,info[0],info[1],false,25)
-		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		control.add_theme_font_size_override("font_size",10)
-	if game.director.saved_available: _button(left,"重新点燃 · 开始新旅途","start",false,24)
-	var footer: HBoxContainer = _hbox(left)
-	_button(footer,"主创与致谢","credits",false,23).add_theme_font_size_override("font_size",9)
-	_button(footer,"离开","quit",false,23).add_theme_font_size_override("font_size",9)
-	_spacer(row,false)
-	var right: VBoxContainer = _vbox(row)
-	right.alignment = BoxContainer.ALIGNMENT_END
-	_label(right,"像素动作冒险",9,T.TEAL)
-	_label(right,"信号在线  ·  最佳 %06d"%game.best_score,9,T.PAPER)
+	_button(left,"继续旅程" if game.director.saved_available else "展开航线","continue" if game.director.saved_available else "start",true,32)
+	var secondary: HBoxContainer = _hbox(left,6)
+	secondary.custom_minimum_size.y = 0 if _mobile() and not game.director.saved_available else 34
+	secondary.alignment = BoxContainer.ALIGNMENT_BEGIN
+	if game.director.saved_available:
+		_label(secondary,"＋",12,T.TEAL).size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var next: Button = _link(secondary,"展开新航线","start",10)
+		next.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_rule(left)
+	var links: HBoxContainer = _hbox(left,12)
+	links.custom_minimum_size.y = 28
+	for entry: Array in [["手册","help"],["设置","settings"],["档案","bestiary"],["主创与致谢","credits"],["离开","quit"]]:
+		_link(links,entry[0],entry[1],9).size_flags_vertical = Control.SIZE_SHRINK_END
+	_spacer(root_box,false)
+	var right: VBoxContainer = _vbox(root_box,0)
+	right.custom_minimum_size.x = 118
+	_label(right,"▪  移动信号在线" if _mobile() else "▪  信号在线",8,T.TEAL).horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_spacer(right)
 
 func _atlas() -> void:
 	_veil(0.98)
@@ -287,7 +358,7 @@ func _atlas() -> void:
 	var footer: HBoxContainer = _hbox(root_box)
 	_button(footer,"返回","atlas_back",false,28)
 	if is_instance_valid(game.player): _button(footer,"区域图","local_map",false,28)
-	_label(footer,"1 / 2 选择航线\n已探索节点可回访",8,T.MUTED)
+	_label(footer,"轻触航线与节点\n已探索节点可回访" if _mobile() else "1 / 2 选择航线\n已探索节点可回访",8,T.MUTED)
 	_spacer(footer,false)
 	var depart: Button = _button(footer,"前往「%s」  →"%game.campaign.REGIONS[game.campaign.selected],"depart",true,31)
 	default_button = depart
@@ -304,98 +375,108 @@ func _bar(parent: Node,color: Color,height: int=5) -> ProgressBar:
 	return bar
 
 func _hud() -> void:
+	if _mobile():
+		_mobile_hud()
+		return
 	if not is_instance_valid(game.player): return
-	var top: MarginContainer = _margin(screen,12)
+	# The edge bands leave the playable middle clear, including the floor at y=300.
+	for index: int in range(3):
+		for lower: bool in [false,true]:
+			var shade: ColorRect = ColorRect.new()
+			shade.color = Color(T.INK,[0.18,0.45,0.65][index] if lower else [0.55,0.35,0.15][index])
+			shade.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE if lower else Control.PRESET_TOP_WIDE)
+			shade.offset_top = -48+index*16 if lower else index*16
+			shade.offset_bottom = shade.offset_top+16
+			screen.add_child(shade)
+	var top: MarginContainer = _margin(screen,10)
 	top.anchor_bottom = 0
-	top.offset_bottom = 54
-	var row: HBoxContainer = _hbox(top,10)
-	var identity: PanelContainer = _panel(row)
-	identity.custom_minimum_size.x = 152
-	identity.add_theme_stylebox_override("panel",T.flat(Color(0.035,0.08,0.10,0.90),Color.TRANSPARENT,0))
-	var info: HBoxContainer = _hbox(identity,4)
-	var avatar: TextureRect = TextureRect.new()
-	var texture: AtlasTexture = AtlasTexture.new()
-	texture.atlas = preload("res://assets/art/player-idle.png")
-	texture.region = Rect2(24,15,29,50)
-	avatar.texture = texture
-	avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	avatar.custom_minimum_size = Vector2(21,30)
-	info.add_child(avatar)
-	var health: VBoxContainer = _vbox(info,2)
-	health.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var hp_row: HBoxContainer = _hbox(health)
+	top.offset_bottom = 65
+	top.add_theme_constant_override("margin_top",8)
+	top.add_theme_constant_override("margin_bottom",0)
+	var row: HBoxContainer = _hbox(top,11)
+	_signal_art(row,"signal-badge",Vector2(28,40)).size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	var info: VBoxContainer = _vbox(row,5)
+	info.custom_minimum_size.x = 117
+	var hp_row: HBoxContainer = _hbox(info,0)
 	_label(hp_row,"信使 07",9,T.MUTED)
 	_spacer(hp_row,false)
-	fields.hp_text = _label(hp_row,"",11,T.GOLD)
-	fields.hp = _bar(health,T.GOLD,6)
-	fields.energy = _bar(health,T.TEAL,3)
-	var resources: VBoxContainer = _vbox(row,4)
-	var count_row: HBoxContainer = _hbox(resources,5)
-	_icon(count_row,"ember",18,T.GOLD)
-	fields.embers = _label(count_row,"00",16,T.GOLD)
-	_icon(count_row,"memory",15,T.TEAL)
-	fields.memories = _label(count_row,"0/18",10,T.PAPER)
-	fields.clock = _label(resources,"",9,T.MUTED)
+	fields.hp_text = _label(hp_row,"",9,T.GOLD)
+	fields.hp = SEGMENTED_METER.new()
+	fields.hp.custom_minimum_size = Vector2(117,5)
+	info.add_child(fields.hp)
+	fields.energy = _bar(info,T.TEAL,3)
+	var resources: HBoxContainer = _hbox(info,5)
+	_icon(resources,"ember",12,T.GOLD)
+	fields.embers = _label(resources,"00",9,T.PAPER)
+	_icon(resources,"memory",12,T.TEAL)
+	fields.memories = _label(resources,"0 / 18",9,T.MUTED)
+	fields.clock = _label(info,"",8,T.MUTED)
 	fields.clock.visible = false
 	_spacer(row,false)
-	var goal_panel: PanelContainer = _panel(row)
-	goal_panel.custom_minimum_size.x = 174
-	goal_panel.add_theme_stylebox_override("panel",T.flat(Color(0.035,0.08,0.1,0.9)))
-	var goal: VBoxContainer = _vbox(goal_panel,1)
-	_label(goal,game.chapter_names[game.chapter],12,T.PAPER)
-	fields.goal = _label(goal,"",9,T.TEAL)
-	var bottom: MarginContainer = _margin(screen,12)
-	bottom.add_theme_constant_override("margin_top",0)
-	bottom.add_theme_constant_override("margin_bottom",0)
+	var goal: VBoxContainer = _vbox(row,3)
+	goal.custom_minimum_size.x = 153
+	var heading: HBoxContainer = _hbox(goal,6)
+	var line: ColorRect = _rule(heading,true)
+	line.color = T.TEAL
+	line.custom_minimum_size = Vector2(2,12)
+	line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_label(heading,"%02d / %s"%[game.chapter+1,game.chapter_names[game.chapter]],11,T.PAPER)
+	fields.goal = _label(goal,"",9,T.TEAL,true)
+	fields.goal.custom_minimum_size.x = 153
+	fields.goal.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var bottom: MarginContainer = _margin(screen,18)
 	bottom.anchor_top = 1
-	bottom.offset_top = -48
-	var lower: HBoxContainer = _hbox(bottom,5)
-	for info_key: Array in [["Q","parry"],["F","repair"],["R","burst"]]:
-		var slot: PanelContainer = _panel(lower)
-		slot.custom_minimum_size = Vector2(32,29)
-		slot.add_theme_stylebox_override("panel",T.material("slot"))
-		var box: VBoxContainer = _vbox(slot,0)
-		_icon(box,info_key[1],14,T.TEAL if info_key[0]=="Q" else T.GOLD)
-		var key: Label = _label(box,info_key[0],8,T.PAPER)
+	bottom.offset_top = -45
+	bottom.add_theme_constant_override("margin_top",0)
+	bottom.add_theme_constant_override("margin_bottom",8)
+	var lower: HBoxContainer = _hbox(bottom,14)
+	for entry: Array in [["parry","parry"],["heal","repair"],["burst","burst"]]:
+		var box: VBoxContainer = _vbox(lower,3)
+		_icon(box,entry[1],16)
+		var key: Label = _label(box,"",8,T.MUTED)
 		key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		if info_key[0]=="F": fields.repairs = key
-		if info_key[0]=="R": fields.burst = key
-		if info_key[0]=="Q": fields.parry = key
+		if entry[0]=="heal": fields.repairs = key
+		elif entry[0]=="burst": fields.burst = key
+		else: fields.parry = key
+	_rule(lower,true).custom_minimum_size.y = 30
 	var gauge: VBoxContainer = _vbox(lower,3)
-	gauge.custom_minimum_size.x = 70
-	gauge.alignment = BoxContainer.ALIGNMENT_CENTER
-	fields.flame_status = _label(gauge,"余烬共鸣",8,T.MUTED)
-	fields.focus = _bar(gauge,T.GOLD,4)
+	gauge.custom_minimum_size.x = 100
+	fields.flame_status = _label(gauge,"",8,T.MUTED)
+	fields.focus = SEGMENTED_METER.new()
+	fields.focus.segments = 10
+	fields.focus.gap = 2
+	fields.focus.custom_minimum_size = Vector2(100,3)
+	gauge.add_child(fields.focus)
 	fields.equipped = _label(gauge,"",8,T.TEAL)
 	_spacer(lower,false)
-	fields.controls_hint = _label(lower,"",9,T.MUTED)
-	var lesson: Label = _label(screen,"",9,T.PAPER)
-	lesson.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	lesson.offset_left = 80
-	lesson.offset_right = -80
-	lesson.offset_top = -57
-	lesson.offset_bottom = -42
+	fields.controls_hint = _label(lower,"",8,T.MUTED)
+	fields.controls_hint.custom_minimum_size.x = 143
+	var lesson: Label = _label(screen,"",8,T.MUTED,true)
+	lesson.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	lesson.offset_left = 190
+	lesson.offset_right = -190
+	lesson.offset_top = 16
+	lesson.offset_bottom = 44
 	lesson.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lesson.add_theme_stylebox_override("normal",T.flat(Color(0.025,0.06,0.08,0.88)))
+	lesson.add_theme_stylebox_override("normal",T.flat(Color(0.047,0.09,0.12,0.88)))
 	fields.lesson = lesson
 	var boss_holder: CenterContainer = CenterContainer.new()
 	boss_holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	boss_holder.offset_top = 68
-	boss_holder.offset_bottom = 102
+	boss_holder.offset_top = 69
+	boss_holder.offset_bottom = 99
 	screen.add_child(boss_holder)
 	fields.boss_holder = boss_holder
 	var boss_box: VBoxContainer = _vbox(boss_holder,4)
-	boss_box.custom_minimum_size.x = 300
+	boss_box.custom_minimum_size.x = 280
 	fields.boss_name = _label(boss_box,"",10,T.GOLD)
 	fields.boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	fields.boss_hp = _bar(boss_box,T.GOLD,5)
 	fields.combo = _label(screen,"",14,T.GOLD)
-	fields.combo.position = Vector2(18,70)
+	fields.combo.position = Vector2(18,76)
 	var center: CenterContainer = CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	center.offset_top = 79
-	center.offset_bottom = 133
+	center.offset_top = 80
+	center.offset_bottom = 132
 	screen.add_child(center)
 	toast_box = _panel(center)
 	toast_box.custom_minimum_size.x = 316
@@ -411,8 +492,8 @@ func _hud() -> void:
 		intro.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 		intro.offset_top = -86
 		var text: VBoxContainer = _vbox(intro,2)
-		_label(text,"GUARDIAN PROTOCOL / 终点守卫",9,T.TEAL).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_label(text,game.campaign.BOSSES[game.chapter/3],25,T.PAPER).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_label(text,"终点守卫",9,T.TEAL).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_display(text,game.campaign.BOSSES[game.chapter/3],28).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_label(text,"ENTER 跳过登场",8,T.MUTED).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 func _set_passive(node: Node) -> void:
@@ -421,26 +502,34 @@ func _set_passive(node: Node) -> void:
 
 func _sync_stats() -> void:
 	if building or fields.is_empty() or not is_inside_tree(): return
+	if fields.has("mobile_hud"):
+		_sync_mobile_stats()
+		return
+	if fields.has("module_hint"):
+		fields.module_hint.text = "十字键预览 · → 确认\nA 装配 / B 返回" if game.controls.pad_active else "↑↓ 预览 · → 确认\n1 / 2 / 3 快捷装配"
 	if fields.has("hp") and is_instance_valid(game.player):
 		var p: Node = game.player
 		fields.hp.max_value = p.max_health
+		fields.hp.segments = p.max_health
 		fields.hp.value = p.health
 		fields.hp_text.text = "%d / %d"%[p.health,p.max_health]
 		fields.energy.value = p.energy
 		fields.focus.value = game.director.focus
 		fields.embers.text = "%02d"%game.embers
-		fields.memories.text = "%d/18"%game.relics
+		fields.memories.text = "%d / 18"%game.relics
 		fields.clock.text = game.format_time(game.elapsed)
 		fields.repairs.text = "%s ×%d"%[game.controls.prompt("heal"),game.director.potions]
 		fields.parry.text = game.controls.prompt("parry")
 		fields.burst.text = game.controls.prompt("burst")+(" 就绪" if game.director.focus>=100 else "")
-		fields.flame_status.text = "共鸣 %d"%int(game.director.focus)+(" · 返流" if game.flame.charged>0 else "")
-		fields.equipped.text = game.flame.NAMES[game.flame.module] if game.flame.module>=0 else "支路中继 / 待装配"
-		fields.controls_hint.text = "%s 地图 · %s 航线\n设置中可查看与修改操作"%[game.controls.prompt("local_map"),game.controls.prompt("journal")]
+		fields.flame_status.text = "共鸣  %d / 100"%int(game.director.focus)+(" · 返流" if game.flame.charged>0 else "")
+		fields.equipped.text = game.flame.NAMES[game.flame.module]+" · 已装配" if game.flame.module>=0 else "支路中继 · 待装配"
+		var nearby: bool = p.position.distance_to(game.flame.position_for())<50
+		fields.controls_hint.text = ("%s  中继工坊"%game.controls.prompt("interact") if nearby else "%s  场景交互"%game.controls.prompt("interact"))+"\n%s  区域图 / %s  航线"%[game.controls.prompt("local_map"),game.controls.prompt("journal")]
 		fields.lesson.text = game.flame.lesson_text
 		fields.lesson.visible = not game.flame.lesson_text.is_empty()
 		var target: Dictionary = game.guide.current()
-		fields.goal.text = _objective()+"\n"+game.guide.direction(target).replace("E ",game.controls.prompt("interact")+" ").replace("C ",game.controls.prompt("local_map")+" ")
+		var objective: String = ("水力桥已通电 · 继续向东" if game.presentation.circuit_on else "穿过东侧检修口") if game.chapter==1 else _objective()
+		fields.goal.text = objective+"\n"+game.guide.direction(target).replace("E ",game.controls.prompt("interact")+" ").replace("C ",game.controls.prompt("local_map")+" ")
 		if (game.boss_awake and not game.boss_defeated) or game.director.active_arena>=0: _dismiss_toast()
 		fields.combo.text = "%02d 连击"%game.director.combo if game.director.combo>=3 else ""
 		fields.boss_holder.visible = game.boss_awake and not game.boss_defeated and is_instance_valid(game.boss)
@@ -470,6 +559,7 @@ func _dismiss_toast() -> void:
 	if is_instance_valid(toast_box): toast_box.visible = false
 
 func _notice(message: String) -> void:
+	message = game.controls.adapt_text(message)
 	if not is_instance_valid(toast_box) or game.state!="playing": return
 	# Held attacks and active battles always keep the arena free of message panels.
 	if Input.is_action_pressed("attack") or Input.is_action_pressed("pulse"):
@@ -479,7 +569,7 @@ func _notice(message: String) -> void:
 		_dismiss_toast()
 		return
 	if is_instance_valid(toast_tween): toast_tween.kill()
-	fields.toast_title.text = "灯塔 / 旅途信号  ·  攻击键收起"
+	fields.toast_title.text = "北线投递处"
 	fields.toast.text = message
 	toast_box.visible = true
 	toast_box.modulate.a = 1
@@ -491,11 +581,11 @@ func _notice(message: String) -> void:
 func _radio(message: String) -> void:
 	if game.notice_timer>0 or game.boss_awake or game.director.active_arena>=0: return
 	_notice(message)
-	if is_instance_valid(toast_box): fields.toast_title.text = "灯塔 / 无线电接入  ·  攻击键收起"
+	if is_instance_valid(toast_box): fields.toast_title.text = "投递处通讯"
 
 func _shop() -> void:
 	var box: VBoxContainer = _modal(582,300)
-	var head: HBoxContainer = _header(box,"RELAY 07 / MAINTENANCE","中继工坊")
+	var head: HBoxContainer = _header(box,"RELAY 07 / MAINTENANCE","中继补给")
 	_icon(head,"ember",21,T.GOLD)
 	fields.shop_currency = _label(head,"",17,T.GOLD)
 	var cards: HBoxContainer = _hbox(box,9)
@@ -518,6 +608,9 @@ func _shop() -> void:
 	default_button = _button(foot,"继续前进   →","close",true,28)
 
 func _settings() -> void:
+	if _mobile():
+		_mobile_settings()
+		return
 	var box: VBoxContainer = _modal(480,286)
 	_header(box,"COURIER TERMINAL / PREFERENCES","旅途设置")
 	var audio_row: HBoxContainer = _hbox(box)
@@ -562,6 +655,9 @@ func _settings() -> void:
 	default_button = _button(box,"保存并返回","settings_back",true,31)
 
 func _controls() -> void:
+	if _mobile():
+		_mobile_controls()
+		return
 	var box: VBoxContainer = _modal(584,326)
 	box.add_theme_constant_override("separation",4)
 	_header(box,"INPUT / COURIER CONTROLS","操作与按键")
@@ -596,27 +692,76 @@ func _keyboard_binding(action: String) -> String:
 	return "—"
 
 func _attunement() -> void:
-	var box: VBoxContainer = _modal(594,316)
-	_header(box,"IGNITION / OPTIONAL RELAY","把火种留给哪一种可能")
+	preview_module = maxi(0,game.flame.module)
+	_veil(0.88)
+	var pad: MarginContainer = _margin(screen,28)
+	pad.add_theme_constant_override("margin_top",18); pad.add_theme_constant_override("margin_bottom",8)
+	var box: VBoxContainer = _vbox(pad,6)
+	var header: HBoxContainer = _hbox(box)
+	var words: VBoxContainer = _vbox(header,3)
+	_display(words,"中继检修",24)
+	_label(words,"返流、破甲、机动。只装一件。",10,T.MUTED)
+	_spacer(header,false)
 	var on: bool = game.flame.lit.has(game.chapter)
-	_label(box,"中继已点亮 · 更换免费" if on else "接通消耗 60 共鸣，选定后扣除 · 也可以保留共鸣用于 100 点爆发",10,T.TEAL)
-	var cards: HBoxContainer = _hbox(box,9)
-	cards.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_label(header,"已接通 · 免费更换" if on else "未接通 · 60 共鸣",10,T.GOLD)
+	var gap: Control = Control.new(); gap.custom_minimum_size.y = 3; box.add_child(gap)
+	var content: HBoxContainer = _hbox(box,38); content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var left: VBoxContainer = _vbox(content,8); left.custom_minimum_size.x = 248
+	var plate: PanelContainer = _panel(left); plate.custom_minimum_size = Vector2(248,172)
+	plate.add_theme_stylebox_override("panel",T.flat(Color("233942"),T.EDGE,1,0))
+	var art_center: CenterContainer = CenterContainer.new(); plate.add_child(art_center)
+	fields.module_art = TextureRect.new()
+	fields.module_art.texture = load("res://assets/studio/coil.png")
+	fields.module_art.custom_minimum_size = Vector2(128,128)
+	fields.module_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	fields.module_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art_center.add_child(fields.module_art)
+	var slots: HBoxContainer = _hbox(left,10)
 	for index: int in range(3):
-		var card: PanelContainer = _panel(cards)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color.TRANSPARENT,0,8))
-		var column: VBoxContainer = _vbox(card,4)
-		_label(column,["01 / 弹反反击","02 / 连斩破阵","03 / 空中机动"][index],8,T.MUTED)
-		_item_art(column,game.flame.ITEMS[index],T.TEAL if index==0 else T.GOLD).custom_minimum_size.y = 53
-		_label(column,game.flame.NAMES[index],17)
-		_label(column,game.flame.DETAILS[index],9,T.MUTED)
-		_spacer(column)
-		_button(column,"已装配 · 继续" if game.flame.module==index else "%d 装配"%(index+1),"attune_"+str(index),index==0,28)
-	var foot: HBoxContainer = _hbox(box)
-	_label(foot,"单槽装配。"+("接通后关闭蒸汽，升起排水步道。" if game.chapter==1 else "点亮的中继可免费改装。"),9,T.MUTED)
-	_spacer(foot,false)
-	_button(foot,"暂不接通","close",false,27)
+		var slot: VBoxContainer = _vbox(slots,2)
+		var button: Button = _button(slot,"","attune_"+str(index),false,32)
+		button.custom_minimum_size.x = 62
+		var icon: TextureRect = TextureRect.new(); icon.texture = load("res://assets/studio/"+MODULE_ART[index]+".png")
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		button.add_child(icon); icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); icon.offset_left = 15; icon.offset_right = -15; icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_label(slot,["返流","破甲","机动"][index],10,T.MUTED).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.focus_entered.connect(_select_module.bind(index))
+		button.mouse_entered.connect(_select_module.bind(index))
+		fields["module_role_"+str(index)] = _label(left,"",10); fields["module_role_"+str(index)].visible = false
+	fields.module_hint = _label(left,"",10); fields.module_hint.visible = false
+	var detail: VBoxContainer = _vbox(content,8); detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fields.module_role = _label(detail,"",11,T.TEAL)
+	fields.module_name = _display(detail,"",22)
+	fields.module_quote = _label(detail,"",11,T.PAPER,true)
+	fields.module_description = _label(detail,"",11,T.MUTED,true)
+	_spacer(detail)
+	_button(detail,"","equip_preview",true,32)
+	_label(detail,"接通后可免费更换，不叠加效果。",10,T.MUTED)
+	_link(box,"返回旅途 · 取消不扣除共鸣" if _mobile() else "Esc 返回 · 取消不扣除共鸣","close",10)
+	default_button = actions.equip_preview
+	for index: int in range(3):
+		actions["attune_"+str(index)].focus_neighbor_right = actions.equip_preview.get_path()
+		actions["attune_"+str(index)].focus_neighbor_top = actions["attune_"+str((index+2)%3)].get_path()
+		actions["attune_"+str(index)].focus_neighbor_bottom = actions["attune_"+str((index+1)%3)].get_path()
+	_select_module(preview_module)
+
+func _select_module(index: int) -> void:
+	if not fields.has("module_name"): return
+	preview_module = clampi(index,0,2)
+	fields.module_role.text = MODULE_ROLES[index]
+	fields.module_name.text = game.flame.NAMES[index]
+	fields.module_art.texture = load("res://assets/studio/"+MODULE_ART[index]+".png")
+	fields.module_quote.text = ["弹反后，下一发脉冲变强。","第三段命中，打断重装守卫。","空中射击时短暂悬停。"][index]
+	fields.module_description.text = ["完美弹反 → 脉冲反击\n5 伤害 / 14 能量 / 8 秒内有效","第三击 → 恢复 10 共鸣\n每次挥击仅触发一次。","首次空中射击 → 悬停 0.16 秒\n冲刺冷却缩短 0.3 秒，落地重装。"][index]
+	actions.equip_preview.text = "保持装配 · 返回" if game.flame.module==index else "装入"+game.flame.NAMES[index]
+	actions.equip_preview.disabled = not game.flame.lit.has(game.chapter) and game.director.focus<60
+	actions.equip_preview.focus_neighbor_left = actions["attune_"+str(index)].get_path()
+	for item: int in range(3):
+		var button: Button = actions["attune_"+str(item)]
+		var slot_style: StyleBoxFlat = T.flat(Color("233942") if item==index else Color.TRANSPARENT)
+		slot_style.border_color = T.ORANGE; slot_style.border_width_left = 2 if item==index else 0
+		button.add_theme_stylebox_override("normal",slot_style)
+		button.add_theme_color_override("font_color",T.INK)
 
 func _pause_or_retry() -> void:
 	var box: VBoxContainer = _modal(510,276)
@@ -634,7 +779,7 @@ func _pause_or_retry() -> void:
 	_label(menu,game.chapter_names[game.chapter],14,T.GOLD)
 	_label(menu,"旅途 "+game.format_time(game.elapsed)+"  /  记忆 %d/18"%game.relics,10,T.MUTED)
 	_spacer(menu)
-	default_button = _button(menu,"从中继站重试   R" if dead else "继续旅程   ESC","respawn" if dead else "resume",true,31)
+	default_button = _button(menu,("从中继站重试" if dead else "继续旅程") if _mobile() else ("从中继站重试   R" if dead else "继续旅程   ESC"),"respawn" if dead else "resume",true,31)
 	if not dead: _button(menu,"旅途设置","settings",false,27)
 	_button(menu,"返回标题","menu",false,27)
 	_label(box,"安全进度会保留。看清出手预警，冲刺穿过攻击，抓住恢复期反击。",9,T.MUTED)
@@ -649,7 +794,7 @@ func _reward() -> void:
 		var card: PanelContainer = _panel(cards)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var accent: Color = T.TEAL if index==2 else T.GOLD
-		card.add_theme_stylebox_override("panel",T.flat(Color("10222b"),Color.TRANSPARENT,0,9))
+		card.add_theme_stylebox_override("panel",T.module_frame())
 		var column: VBoxContainer = _vbox(card,3)
 		_label(column,["M-01 / 近战组件","V-02 / 生存组件","P-03 / 远程组件"][index],9,accent)
 		var art: Control = _item_art(column,["blade","vital","pulse"][index],accent)
@@ -672,7 +817,7 @@ func _reward() -> void:
 
 func _highlight_module(card: PanelContainer,art: Control,accent: Color,active: bool) -> void:
 	art.selected = active
-	card.add_theme_stylebox_override("panel",T.flat(Color("162d34") if active else Color("10222b"),accent if active else Color("3c565d"),1,9))
+	card.add_theme_stylebox_override("panel",T.module_frame(active))
 
 func _ending() -> void:
 	var box: VBoxContainer = _modal(508,294)
@@ -691,6 +836,9 @@ func _ending() -> void:
 	_button(row,"返回标题","menu",false,32).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func _help() -> void:
+	if _mobile():
+		_mobile_help()
+		return
 	var box: VBoxContainer = _modal(548,302)
 	_header(box,"COURIER FIELD GUIDE / 操作与生存","信使手册")
 	var columns: HBoxContainer = _hbox(box,20)
@@ -705,7 +853,10 @@ func _help() -> void:
 			_label(row,entry[1],9,T.PAPER)
 	_label(box,"近战与弹反积累共鸣：60 点亮支路中继，100 释放爆发。\n单槽装配可免费更换；重装守卫可以弹反或绕后。",10,T.MUTED)
 	_spacer(box)
-	default_button = _button(box,"明白了，继续前行","help",true,30)
+	var footer: HBoxContainer = _hbox(box)
+	_button(footer,"守卫档案","bestiary",false,30)
+	_spacer(footer,false)
+	default_button = _button(footer,"明白了，继续前行","help",true,30)
 
 func _journal() -> void:
 	var box: VBoxContainer = _modal(594,316)
@@ -723,9 +874,9 @@ func _journal() -> void:
 	_label(box,"● 当前位置   ◇ 目标   青色中继站   金色补给 / 机关   巡逻可绕行",8,T.TEAL)
 	_label(box,_objective()+"  ·  "+game.guide.direction(game.guide.current()),11,T.GOLD)
 	var footer: HBoxContainer = _hbox(box)
-	_label(footer,"LB / RB 平移 · 方向键选择缩放按钮\nA 确认 · B / RS 返回" if game.controls.pad_active else "拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)
+	_label(footer,"单指拖动平移 · ＋ / − 缩放\n轻触顶端缩略线可快速定位" if _mobile() else "LB / RB 平移 · 方向键选择缩放按钮\nA 确认 · B / RS 返回" if game.controls.pad_active else "拖动 / A·D 平移 · 滚轮 / ± 缩放\n点击顶端缩略线可快速定位",8,T.MUTED)
 	_spacer(footer,false)
-	default_button = _button(footer,"继续旅途   C / ESC" if game.campaign.local_return=="playing" else "返回世界地图","local_back",true,28)
+	default_button = _button(footer,("继续旅途" if _mobile() else "继续旅途   C / ESC") if game.campaign.local_return=="playing" else "返回世界地图","local_back",true,28)
 
 func _bestiary() -> void:
 	_veil(0.98)
@@ -776,6 +927,7 @@ func _asset_credits() -> void:
 		var row: HBoxContainer = _hbox(box)
 		_label(row,entry[0],10,T.TEAL).custom_minimum_size.x = 103
 		_label(row,entry[1],10,T.PAPER)
+	_label(box,"字体：Noto Sans SC / 站酷庆科黄油体 · SIL OFL 1.1",9,T.MUTED)
 	_label(box,"感谢上述素材提供者。许可、来源与改动说明随游戏分发于「素材鸣谢」。",9,T.MUTED)
 	_spacer(box)
 	default_button = _button(box,"返回主创名单","credits_return",true,28)
@@ -825,3 +977,161 @@ func consume_shortcut(event: InputEvent) -> bool:
 		game.flame.equip(key-KEY_1)
 		return true
 	return false
+
+func _mobile_hud() -> void:
+	if not is_instance_valid(game.player): return
+	fields.mobile_hud = true
+	var top: MarginContainer = _margin(screen,10)
+	top.anchor_bottom = 0; top.offset_bottom = 70
+	top.add_theme_constant_override("margin_top",6)
+	top.add_theme_constant_override("margin_bottom",0)
+	var row: HBoxContainer = _hbox(top,14)
+	var info: VBoxContainer = _vbox(row,3)
+	info.custom_minimum_size.x = 140
+	var hp: HBoxContainer = _hbox(info,5)
+	_signal_art(hp,"signal-badge",Vector2(18,23))
+	_label(hp,"信使 07",11,T.PAPER)
+	_spacer(hp,false)
+	fields.hp_text = _label(hp,"",11,T.GOLD)
+	fields.hp = SEGMENTED_METER.new()
+	fields.hp.custom_minimum_size = Vector2(140,5)
+	info.add_child(fields.hp)
+	fields.energy = _bar(info,T.TEAL,3)
+	var resources: HBoxContainer = _hbox(info,5)
+	_icon(resources,"ember",12,T.GOLD)
+	fields.embers = _label(resources,"",11,T.PAPER)
+	_icon(resources,"memory",12,T.TEAL)
+	fields.memories = _label(resources,"",11,T.MUTED)
+	fields.mobile_supplies = _label(info,"",11,T.MUTED)
+	var objective: VBoxContainer = _vbox(row,3)
+	objective.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_label(objective,"%02d / %s"%[game.chapter+1,game.chapter_names[game.chapter]],12,T.PAPER)
+	fields.goal = _label(objective,"",11,T.TEAL,true)
+	fields.goal.custom_minimum_size.x = 150
+	# Reserve the top-right thumb targets owned by TouchControls.
+	var reserved: Control = Control.new(); reserved.custom_minimum_size.x = 88; row.add_child(reserved)
+	fields.lesson = _label(screen,"",11,T.MUTED,true)
+	fields.lesson.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	fields.lesson.offset_left = 170; fields.lesson.offset_right = -100
+	fields.lesson.offset_top = 64; fields.lesson.offset_bottom = 84
+	fields.lesson.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var boss_holder: CenterContainer = CenterContainer.new()
+	boss_holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	boss_holder.offset_top = 84; boss_holder.offset_bottom = 113
+	screen.add_child(boss_holder); fields.boss_holder = boss_holder
+	var boss_box: VBoxContainer = _vbox(boss_holder,3)
+	boss_box.custom_minimum_size.x = 260
+	fields.boss_name = _label(boss_box,"",11,T.GOLD)
+	fields.boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	fields.boss_hp = _bar(boss_box,T.GOLD,5)
+	fields.combo = _label(screen,"",14,T.GOLD)
+	fields.combo.position = Vector2(16,84)
+	var center: CenterContainer = CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	center.offset_top = 86; center.offset_bottom = 139
+	screen.add_child(center)
+	toast_box = _panel(center); toast_box.custom_minimum_size.x = 308
+	toast_box.visible = false
+	var words: VBoxContainer = _vbox(toast_box,2)
+	fields.toast_title = _label(words,"投递处通讯 · 触摸攻击收起",11,T.TEAL)
+	fields.toast = _label(words,"",12,T.PAPER,true)
+	fields.toast.custom_minimum_size.x = 284
+	fields.toast.custom_minimum_size.y = 24
+	_set_passive(screen)
+	if game.state=="boss_intro":
+		var center_intro: CenterContainer = CenterContainer.new()
+		center_intro.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+		center_intro.offset_top = 125
+		center_intro.offset_bottom = 225
+		screen.add_child(center_intro)
+		var box: VBoxContainer = _vbox(_panel(center_intro),6)
+		_display(box,game.campaign.BOSSES[game.chapter/3],28)
+		var skip: Button = _button(box,"开始交锋","skip_mobile_intro",true,36)
+		skip.pressed.connect(func() -> void: game.director.boss_intro = 0)
+
+func _sync_mobile_stats() -> void:
+	if not is_instance_valid(game.player): return
+	var p: Node = game.player
+	fields.hp.max_value = p.max_health; fields.hp.segments = p.max_health; fields.hp.value = p.health
+	fields.hp_text.text = "%d / %d"%[p.health,p.max_health]
+	fields.energy.value = p.energy
+	fields.embers.text = str(game.embers)
+	fields.memories.text = "%d/18"%game.relics
+	fields.mobile_supplies.text = "修复×%d · 共鸣 %d%%"%[game.director.potions,roundi(game.director.focus)]
+	var target: Dictionary = game.guide.current()
+	var objective: String = ("水力桥通电 · 继续向东" if game.presentation.circuit_on else "穿过东侧检修口") if game.chapter==1 else _objective()
+	fields.goal.text = objective+"\n"+game.guide.direction(target).replace("E ","交互 ").replace("C 地图","轻触地图")
+	fields.lesson.text = "左侧移动 · 右侧攻击 / 跳跃" if not game.flame.lesson_text.is_empty() else ""
+	fields.lesson.visible = not fields.lesson.text.is_empty() and not game.boss_awake
+	fields.combo.text = "%02d 连击"%game.director.combo if game.director.combo>=3 else ""
+	fields.boss_holder.visible = game.boss_awake and not game.boss_defeated and is_instance_valid(game.boss)
+	if fields.boss_holder.visible:
+		fields.boss_name.text = game.campaign.BOSSES[game.chapter/3]
+		fields.boss_hp.max_value = game.boss.max_health; fields.boss_hp.value = game.boss.health
+	if game.boss_awake or game.director.active_arena>=0: _dismiss_toast()
+
+func _mobile_settings() -> void:
+	var box: VBoxContainer = _modal(550,318)
+	box.add_theme_constant_override("separation",6)
+	_header(box,"PREFERENCES","旅途设置")
+	var audio_row: HBoxContainer = _hbox(box)
+	_label(audio_row,"音量",12)
+	var slider: HSlider = HSlider.new()
+	slider.name = "VolumeSlider"; slider.min_value = 0; slider.max_value = 1; slider.step = 0.05
+	slider.value = game.director.volume; slider.custom_minimum_size = Vector2(180,34)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	audio_row.add_child(slider)
+	slider.value_changed.connect(func(value: float) -> void:
+		game.director.volume = value; game.director.apply_volume())
+	slider.drag_ended.connect(func(_changed: bool) -> void: game.director.save_settings())
+	var shake_toggle: CheckButton = CheckButton.new()
+	shake_toggle.text = "命中时镜头震动"; shake_toggle.button_pressed = game.director.shake_enabled
+	shake_toggle.custom_minimum_size.y = 34; box.add_child(shake_toggle)
+	shake_toggle.toggled.connect(func(value: bool) -> void:
+		game.director.shake_enabled = value; game.director.save_settings())
+	var difficulty: OptionButton = OptionButton.new()
+	difficulty.name = "DifficultySelector"; difficulty.custom_minimum_size.y = 34
+	for entry: String in ["漫游 · 更多生命与容错","标准 · 观察预警与反击","挑战 · 承受更高伤害"]: difficulty.add_item(entry)
+	difficulty.select(game.director.difficulty); box.add_child(difficulty)
+	difficulty.item_selected.connect(func(index: int) -> void:
+		game.director.difficulty = index; game.director.save_settings())
+	_button(box,"触控布局与操作说明","controls",false,34)
+	_label(box,"横屏游玩 · 系统返回键可暂停 · 成长上限与电脑版一致",11,T.MUTED,true)
+	_spacer(box)
+	default_button = _button(box,"保存并返回","settings_back",true,36)
+
+func _mobile_controls() -> void:
+	var box: VBoxContainer = _modal(570,326)
+	box.add_theme_constant_override("separation",5)
+	_header(box,"TOUCH CONTROLS","触控操作")
+	_label(box,"左侧摇杆移动 · 向下推＋跳跃穿平台\n长按近战三连斩 · 空中再按跳跃二段跳",12,T.PAPER,true)
+	_label(box,"射击消耗能量 · 冲刺躲避 · 弹反抓住敌人出手\n修复恢复生命 · 共鸣蓄满释放爆发 · 靠近机关点交互",11,T.MUTED,true)
+	var sizes: HBoxContainer = _hbox(box)
+	_label(sizes,"按键大小",12)
+	for entry: Array in [["标准",1.0],["偏大",1.12]]:
+		var b: Button = _button(sizes,entry[0],"touch_size_"+str(entry[1]),false,34)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.pressed.connect(func() -> void:
+			game.controls.touch_scale = entry[1]; game.controls.save_config(); game.touch_controls.relayout())
+	var row: HBoxContainer = _hbox(box)
+	_label(row,"按键透明度",12)
+	var opacity: HSlider = HSlider.new()
+	opacity.name = "TouchOpacity"; opacity.min_value = 0.35; opacity.max_value = 0.9; opacity.step = 0.05
+	opacity.value = game.controls.touch_opacity; opacity.custom_minimum_size = Vector2(220,34)
+	opacity.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(opacity)
+	opacity.value_changed.connect(func(value: float) -> void:
+		game.controls.touch_opacity = value; game.touch_controls.relayout())
+	opacity.drag_ended.connect(func(_changed: bool) -> void: game.controls.save_config())
+	_label(box,"支持多指同时操作；暂停、切到后台会松开所有按键。",11,T.TEAL,true)
+	_spacer(box)
+	default_button = _button(box,"返回设置","controls_back",true,36)
+
+func _mobile_help() -> void:
+	var box: VBoxContainer = _modal(560,310)
+	_header(box,"FIELD GUIDE","信使手册")
+	_label(box,"左拇指移动，右拇指战斗。",17,T.GOLD)
+	_label(box,"长按连斩：自动接续三段近战。\n跳跃：轻触起跳，空中再按完成二段跳。\n冲刺躲避预警，弹反抓住敌人出手的瞬间。",12,T.PAPER,true)
+	_label(box,"射击消耗能量，松手自动恢复；修复恢复两格生命。\n近战与弹反积累共鸣：60 点亮中继，100 释放爆发。\n靠近机关、补给箱与中继门后轻触「交互」。",12,T.MUTED,true)
+	_spacer(box)
+	_label(box,"顶部地图查看目标；暂停 → 设置可调整按键大小和透明度。",11,T.TEAL,true)
+	default_button = _button(box,"明白了，继续前行","help",true,36)

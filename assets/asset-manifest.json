@@ -1,0 +1,2085 @@
+{
+  "version": "5.2.0",
+  "native_resolution": [
+    640,
+    360
+  ],
+  "engine": "Godot 4.7.2",
+  "assets": [
+    {
+      "file": "assets/art/cave-background.png",
+      "size": [
+        240,
+        176
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        240,
+        176
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "7259566dd9da8b0652b6b63b493fdf9e09316353d1346dd8b9a27fad15691f78"
+    },
+    {
+      "file": "assets/art/cave-middleground-no-fungus.png",
+      "size": [
+        272,
+        176
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        272,
+        176
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "e5f89db9989c1efd2b7526ca81b5749d235179982586058e297395881569fe98"
+    },
+    {
+      "file": "assets/art/cave-middleground.png",
+      "size": [
+        272,
+        176
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        272,
+        176
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "40db6a34ca84eb101072782b4eddbadcfa48c8a9df091aeb4fad74a119c95da9"
+    },
+    {
+      "file": "assets/art/cave-props.png",
+      "size": [
+        240,
+        160
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        240,
+        160
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "3def2a4fc548f62c7ed223505530a8308f3cf99c1c99cbac36e2e9aa1469ac0f"
+    },
+    {
+      "file": "assets/art/cave-tilesets.png",
+      "size": [
+        384,
+        192
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        384,
+        192
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "969bd7c672060968a4c00da6f2feec6579b77832bf44eaea3b64e55c94543d36"
+    },
+    {
+      "file": "assets/art/cave-walls.png",
+      "size": [
+        160,
+        128
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        160,
+        128
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "f6a5b7a080691f175d22a7d25f5c0647efd4a45b39088a043ce14089fc833e7e"
+    },
+    {
+      "file": "assets/art/city_city.png",
+      "size": [
+        272,
+        150
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        272,
+        150
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/industrial-parallax-background",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "46e9711c46d62ecf4d185754297699496172d9cae78f472ca8520a5be40626d6"
+    },
+    {
+      "file": "assets/art/city_far.png",
+      "size": [
+        213,
+        142
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        213,
+        142
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/industrial-parallax-background",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "fcf2011dd82140c0f652f95abc1c4c0b06025a7363a612033f89da7714e45d50"
+    },
+    {
+      "file": "assets/art/city_near.png",
+      "size": [
+        272,
+        104
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        272,
+        104
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/industrial-parallax-background",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "11857e9c2e5204f86066a55acc2a89e2ad8af96432f791fe10d8fc19f99eba11"
+    },
+    {
+      "file": "assets/art/city_sky.png",
+      "size": [
+        272,
+        160
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        272,
+        160
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/industrial-parallax-background",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "19642ef0ba3f51bcc195f67a73d948682727224e3dbd51f99f867ac22bfa62b7"
+    },
+    {
+      "file": "assets/art/enemy-death.png",
+      "size": [
+        335,
+        48
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        335,
+        48
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "d90683d9a434b6ab4beb6bff5c7dcb77441bec58ee721217376343597a7af4d7"
+    },
+    {
+      "file": "assets/art/impact.png",
+      "size": [
+        48,
+        12
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        48,
+        12
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "1d42896458f9f7c290f9f3d8b9e3a8e932416fd9dece94cc07f18c6dad48c384"
+    },
+    {
+      "file": "assets/art/industrial.png",
+      "size": [
+        512,
+        512
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        512,
+        512
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Robert / 0x72",
+      "source": "https://0x72.itch.io/16x16-industrial-tileset",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "c8c40fed5fddfb66194005cd0b42d4a553dd7e33eaaeb3d4a691c1bab6156e70"
+    },
+    {
+      "file": "assets/art/industrial_steel.png",
+      "size": [
+        512,
+        512
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        512,
+        512
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Robert / 0x72",
+      "source": "https://0x72.itch.io/16x16-industrial-tileset",
+      "license": "CC0-1.0",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "d25c21aaf54b011c4439d279963777b6893b4f73e6769a94a82c5f03a976794b"
+    },
+    {
+      "file": "assets/art/player-cling.png",
+      "size": [
+        80,
+        80
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "1baf5c0ddf4d5091ecc0d91361d68b6f4dceb251db71986bd31f4beb3135f62e"
+    },
+    {
+      "file": "assets/art/player-duck.png",
+      "size": [
+        80,
+        80
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "fde45a93f3e2de0e40c5d575323b549ec8e305c6424f0531a2fbe9a7567d32bf"
+    },
+    {
+      "file": "assets/art/player-hurt.png",
+      "size": [
+        160,
+        80
+      ],
+      "rgba": true,
+      "frames": 2,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "44cc309a5cc5a0a133de606f27a138555dbfa0675d410d4604cf09343acbcd57"
+    },
+    {
+      "file": "assets/art/player-idle.png",
+      "size": [
+        320,
+        80
+      ],
+      "rgba": true,
+      "frames": 4,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "fa4cce85707b0f7a103dd72896cf33767498befd60a6afd31f6487abc89c3dd0"
+    },
+    {
+      "file": "assets/art/player-jump.png",
+      "size": [
+        480,
+        80
+      ],
+      "rgba": true,
+      "frames": 6,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "62b3e3bcf0e6f12dcc4f9c879d3cb144b40b97c5fb27ef4ecb64d59134ffcbf9"
+    },
+    {
+      "file": "assets/art/player-run-shoot.png",
+      "size": [
+        800,
+        80
+      ],
+      "rgba": true,
+      "frames": 10,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "2eccf663410a41ab738eb0d7df2fa62ea87efb26b6f11c9475b48c6004b25eb8"
+    },
+    {
+      "file": "assets/art/player-run.png",
+      "size": [
+        800,
+        80
+      ],
+      "rgba": true,
+      "frames": 10,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "a1052db9206e44364ee95dd99aa8179479ec0336fc196fc59c9afae724c0a42c"
+    },
+    {
+      "file": "assets/art/player-shoot-up.png",
+      "size": [
+        80,
+        80
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "88fe7ec1e73076eea6ec8a8176a82c74541936c1cb38ed45e4904acdc2de837d"
+    },
+    {
+      "file": "assets/art/player-stand.png",
+      "size": [
+        240,
+        80
+      ],
+      "rgba": true,
+      "frames": 3,
+      "frame_size": [
+        80,
+        80
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "11b44fc54c52e7da8ffd0006af80dc60131d0ac19d5f56e171efedd821b6730f"
+    },
+    {
+      "file": "assets/art/power-up.png",
+      "size": [
+        161,
+        21
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        161,
+        21
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "c72d5f7cd44ad5ef3b18061e3fe5ae91f54e4c6a49982a2774a63daae3b4e572"
+    },
+    {
+      "file": "assets/art/prop-gate-01.png",
+      "size": [
+        48,
+        48
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        48,
+        48
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "65ad7f559c21481ab270b3b0620cd2f809cf7cd08c3b8cc853bf4704d11496e3"
+    },
+    {
+      "file": "assets/art/prop-gate-02.png",
+      "size": [
+        48,
+        48
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        48,
+        48
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "aa69d4da31d612e2364c1a58bb895ee380b094455c7fc1651b4832852f0ffd52"
+    },
+    {
+      "file": "assets/art/prop-gate-03.png",
+      "size": [
+        48,
+        48
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        48,
+        48
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "9b0e59f0e7fb24bc50a36be2bc602bc6b2fd28fed7d8b238cb3612bfa08deb63"
+    },
+    {
+      "file": "assets/art/prop-plant-big.png",
+      "size": [
+        36,
+        48
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        36,
+        48
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "56c28955ae82242f718b345797f421b5564170c07b1c788e2be68af502052b04"
+    },
+    {
+      "file": "assets/art/prop-plant-small.png",
+      "size": [
+        27,
+        32
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        27,
+        32
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "8112a42603c65c101a030f325b91a937ad202963aff4d5035508ba7bb602d455"
+    },
+    {
+      "file": "assets/art/prop-stalactite.png",
+      "size": [
+        38,
+        53
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        38,
+        53
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "bf0b0336a8312de7cb85292db46bd447044d5967914a3228fc4f0949f384eb95"
+    },
+    {
+      "file": "assets/art/prop-stone-head.png",
+      "size": [
+        55,
+        51
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        55,
+        51
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "0f45e57960306c04bfb4969022a92c41688a7a3238819c1a86ed64e7a3d9800f"
+    },
+    {
+      "file": "assets/art/prop-stone.png",
+      "size": [
+        48,
+        40
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        48,
+        40
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "dd6e221078f4d237bdd5630969a3c95ae6bbd9bff3c9682cec4c9c2363cfbb7a"
+    },
+    {
+      "file": "assets/art/shot.png",
+      "size": [
+        12,
+        4
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        12,
+        4
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "CC-BY-3.0 (bundled public-license.txt)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "dbb686c88df4e0556574fc39663075360f47f64b97c6e823178c0c45a0b22f28"
+    },
+    {
+      "file": "assets/art/water-antenna.png",
+      "size": [
+        22,
+        96
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        22,
+        96
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "1d27a3f230e3372ac5a1d9ee7d5506e115fd284e8bf8f37b28247ce6b3b3b96f"
+    },
+    {
+      "file": "assets/art/water-banner-arrow.png",
+      "size": [
+        16,
+        34
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        16,
+        34
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "5169bcae4bf79c580464f1dc08f994ca47bcf90bb4a6623d1c2effc37ece6ad1"
+    },
+    {
+      "file": "assets/art/water-banner-floor.png",
+      "size": [
+        13,
+        10
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        13,
+        10
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "6cd93fbd77f950bbbff4e1b7df2ad6df7bb3f3c5ec8ea093f64592cbebf67f8e"
+    },
+    {
+      "file": "assets/art/water-banner-small.png",
+      "size": [
+        13,
+        35
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        13,
+        35
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "43c636eab69077d7978da3ef2eb4de52c12ad2afedbcf0a43706b988c1de53ed"
+    },
+    {
+      "file": "assets/art/water-buildings-bg.png",
+      "size": [
+        144,
+        124
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        144,
+        124
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "8e02a55e21fcc96ab739786a369f713c68c7a220e9d97595a10a4ee2db1c68bf"
+    },
+    {
+      "file": "assets/art/water-control-box-1.png",
+      "size": [
+        32,
+        30
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        32,
+        30
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "ea5fadd69596ebc75b172a50fab172c5f873ffeb3b8f58c6bf22b18b8c6e1843"
+    },
+    {
+      "file": "assets/art/water-control-box-2.png",
+      "size": [
+        17,
+        27
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        17,
+        27
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "4b9b94e0d87bf8d5217441fea5d1fc14fd04f6bf778975ea689a5d6d866716ab"
+    },
+    {
+      "file": "assets/art/water-control-box-3.png",
+      "size": [
+        62,
+        30
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        62,
+        30
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "8b07ba8d54f620e0987f8305bfe03537274166c479bd66ce75bf78da10d95c40"
+    },
+    {
+      "file": "assets/art/water-near-buildings-bg.png",
+      "size": [
+        493,
+        209
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        493,
+        209
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "13ea7ba3bce48213769c2ceac71a82842aa796b453e283ca96ede7912256fffd"
+    },
+    {
+      "file": "assets/art/water-skyline-a.png",
+      "size": [
+        128,
+        240
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        128,
+        240
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "3642abb28a0a5e8bf30907a00b6f30a3a80b1ad187fe84dd6ec542f14a76ed1b"
+    },
+    {
+      "file": "assets/art/water-skyline-b.png",
+      "size": [
+        128,
+        240
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        128,
+        240
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "e10578bf249328e667efd0e6ad5d082e01fecd91ff091103babf0eb2917e8e25"
+    },
+    {
+      "file": "assets/art/water-tiles.png",
+      "size": [
+        384,
+        256
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        384,
+        256
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "fc089d80fca93820729980a66de958b8837a72ac81e36bbb24030dda8e0316a0"
+    },
+    {
+      "file": "assets/art/water-v-police.png",
+      "size": [
+        163,
+        60
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        163,
+        60
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "a05111c2868ba067ff49113abf16afec6d5d129b2c5b6dc4f6a1f1fd12101ec3"
+    },
+    {
+      "file": "assets/art/water-v-truck.png",
+      "size": [
+        257,
+        104
+      ],
+      "rgba": true,
+      "frames": 1,
+      "frame_size": [
+        257,
+        104
+      ],
+      "filtering": "nearest",
+      "mipmaps": false,
+      "author": "Luis Zuno / Ansimuz",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "CC0-1.0 (bundled public-domain license)",
+      "changes": "Palette normalized; cropped/region-sliced and scaled in Godot",
+      "status": "validated in engine",
+      "sha256": "57c2cef367b3d4e2a9df9b593ad294c1489da1b7a64b7e22f63e2b02b54bed33"
+    },
+    {
+      "file": "assets/music/last-light.ogg",
+      "author": "Pascal Belisle",
+      "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+      "license": "Bundled music license: use in projects with attribution",
+      "changes": "None; looping in game"
+    },
+    {
+      "file": "assets/music/skywater.ogg",
+      "author": "Pascal Belisle",
+      "source": "https://opengameart.org/content/warped-city",
+      "license": "Bundled music license: use in projects with attribution",
+      "changes": "None; looping in chapter two"
+    },
+    {
+      "file": "assets/art/units/scout-idle.png",
+      "family": "scout",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "422d317d0269e7d0a8c91cb2de4903af77c04db9c4813dec8ef6f7e51e86b641",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/scout-move.png",
+      "family": "scout",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "523e5e40a91df0c71748d4abb1ff62620924bbeb73a9c41a84c86b11dc044052",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/scout-attack.png",
+      "family": "scout",
+      "animation": "attack",
+      "frames": 7,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "40b99952dc75d88797ccc4aa52bed97b1406a48a3cb266f09fcd7ae96b9fd366",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/scout-warning.png",
+      "family": "scout",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02CountDown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "02805e4de3e2b9243c01f837b0e072ae88e91d4a0e618d7dfbc510aa6fef5a8c",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/scout-hurt.png",
+      "family": "scout",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "96f41735a7bcda921d9aa6f7b4d2760ac3d7e4558410fcf81dcc62719d92898a",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/scout-death.png",
+      "family": "scout",
+      "animation": "death",
+      "frames": 13,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "bf665675530edac546c43b0d64e4cecffa76302585a1797e5b598b70eaf6c8d0",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-idle.png",
+      "family": "guard",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "f163a3740ac489a0f16d98d0ab028f16e19870f7eb62140507a84c522558907d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-move.png",
+      "family": "guard",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid3Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9b837ea6ff7246b002e88fd69783ecdc202f38e676370b5013d867a1759f5156",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-attack.png",
+      "family": "guard",
+      "animation": "attack",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "6096dce956e3bc0a4e2d6815e76dd27982cc7b761d77b75f4db844d22bc2fb56",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-warning.png",
+      "family": "guard",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Countdown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "03a6d226c9a25072f059fa8684c25522406de4b72d60d94c8e5ca121b472b5c3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-hurt.png",
+      "family": "guard",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "726ab875019579ac071f79f4f985e16245ccda0b1854cb576bab11e3f9622d32",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/guard-death.png",
+      "family": "guard",
+      "animation": "death",
+      "frames": 11,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "1211dcc8b4190414c1e8c33565d238d440bd6d8d50d918c07fd4886bfc081b21",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-idle.png",
+      "family": "sentry",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "ccb5c3f9ddb93fa70be37670666cc142d07ad868f7844fe2566887b7a1c8ac0d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-move.png",
+      "family": "sentry",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid3Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "516fc3266876b8e874c90ba3b2ea52ff0d036f8b036a70fab57bf913c769989b",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-attack.png",
+      "family": "sentry",
+      "animation": "attack",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "67e655113dad695d98833d3aa9393e8ccf2c801d71d8db41190e281521b1dbca",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-warning.png",
+      "family": "sentry",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Countdown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "f50c47dc75b9fbc9fb0c46c39b47e885658ff41dad3d2693e0a8738ea41818b7",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-hurt.png",
+      "family": "sentry",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "5f38267aee11cdcc23fe41205f169e262591d6d944a3d3755b4f8c3d433cfead",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/sentry-death.png",
+      "family": "sentry",
+      "animation": "death",
+      "frames": 11,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "04a48b9fbfd027a4db59d83a80bc97575cee5149f0f740e38978275616518246",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-idle.png",
+      "family": "drone",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "978757d00239f1fcf2c4e5ff3a02005fb4a44f67134bd4e64832aec199a66eb2",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-move.png",
+      "family": "drone",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "97ab3bb2c0022261bd0ae06ac2bf359c1c0f1bfc57dbbebe64c38b48064667f1",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-attack.png",
+      "family": "drone",
+      "animation": "attack",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Shoot.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "7c12e2aa537a4c20e5a72ef8545e63b2db525c09446a93d6581688d104096dea",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-warning.png",
+      "family": "drone",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droind01SelfDestruct.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9bb951c2eec6a5dc71a1eac99c3724454e57e672456b962aba9021b3eb2cff3d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-hurt.png",
+      "family": "drone",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "456f4ca9fefd8a9e5003ab877cdf150829d0205fd78f1492ed8062e50ba31313",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/drone-death.png",
+      "family": "drone",
+      "animation": "death",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "455743c63b9e58698e8720071e2f818532b4ab11ae04588b2a5a5495190178e3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-idle.png",
+      "family": "tempest",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "978757d00239f1fcf2c4e5ff3a02005fb4a44f67134bd4e64832aec199a66eb2",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-move.png",
+      "family": "tempest",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "97ab3bb2c0022261bd0ae06ac2bf359c1c0f1bfc57dbbebe64c38b48064667f1",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-attack.png",
+      "family": "tempest",
+      "animation": "attack",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Shoot.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "7c12e2aa537a4c20e5a72ef8545e63b2db525c09446a93d6581688d104096dea",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-warning.png",
+      "family": "tempest",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droind01SelfDestruct.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9bb951c2eec6a5dc71a1eac99c3724454e57e672456b962aba9021b3eb2cff3d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-hurt.png",
+      "family": "tempest",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "456f4ca9fefd8a9e5003ab877cdf150829d0205fd78f1492ed8062e50ba31313",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/tempest-death.png",
+      "family": "tempest",
+      "animation": "death",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "455743c63b9e58698e8720071e2f818532b4ab11ae04588b2a5a5495190178e3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-idle.png",
+      "family": "boss",
+      "animation": "idle",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss idle-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "48f59c65c100c8bdeac56d8c00b440699003627f7092aeb68f864e9a02b3832e",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-move.png",
+      "family": "boss",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss run-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "4c6f7dc467e8d759740692108b49cc4bb07cea7998675ed04a58f955f397f940",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-attack.png",
+      "family": "boss",
+      "animation": "attack",
+      "frames": 19,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss heavy attack-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "688c75b038ff499cf8079e95ce80e6f7a62bca8c5e4cdcf7043ea292880db0e7",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-shot.png",
+      "family": "boss",
+      "animation": "shot",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss light attack -Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "6c2493dff9b3608fe49b9c4c1a80eac4b970d08268990c8131b73ed80ddb6849",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-warning.png",
+      "family": "boss",
+      "animation": "warning",
+      "frames": 6,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss charge-sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "3c9a884dcafe170c3104e75a60720351676f3ded37c0474cf20afef9871fae2b",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-hurt.png",
+      "family": "boss",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss animation hurt-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "0796d2a4a39308f18f09ddce31717f8c6e4111441a4c7d8e00c11f3ad275e984",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-death.png",
+      "family": "boss",
+      "animation": "death",
+      "frames": 14,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss animation death-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "e5baf8e0305a3cff1ec506afa08dd74f3ba30edcb2af64272723c32b0d45f6e9",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-rise.png",
+      "family": "boss",
+      "animation": "rise",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss flying up -Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "272de14d0e2a0d0dd6e498e54df09346e9c2bd26868f7af792bc4c14a7996ab4",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/art/units/boss-fall.png",
+      "family": "boss",
+      "animation": "fall",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss falling-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "b5a51c954b86a29eb66f0c0a6d04c2a5198e00cdfe95d380fafc7aec410b75a9",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/panel.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "24c8db144dc8fb7727f7d12ff5cce9dc59a54cf4ffba968dfdacc59c322948b4",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/button.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/button_square_header_small_rectangle.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        96,
+        32
+      ],
+      "sha256": "97d0ab582264798051598bc9167345dc6ddfec4d524f5e0b1e855a8b30cac524",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/button-active.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/button_square_header_small_rectangle.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        96,
+        32
+      ],
+      "sha256": "281ce80aca8f94577dab83543289d920aac31be34fb5fd595b243a1ad2805ef4",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/slot.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large_square.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        12,
+        12
+      ],
+      "sha256": "5d0c7a7c6a1b42f0b8a39098142321ff065fa166471360194c08030891217b66",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/bar-track.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "4d1882f7fbb3e5e9100c4d841a03fc28db4532a991719052a4b130e1ba1a1505",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/bar-fill.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "63a450b93e7e260fdb4501fc90b736b7c9fd82c617e9f6f95b8c1b0bed29c85e",
+      "status": "validated with native sprite animation and in-engine screenshots"
+    },
+    {
+      "file": "assets/ui/*.svg",
+      "author": "Ember Relay project",
+      "license": "Project-original",
+      "changes": "Simple functional vector symbols"
+    },
+    {
+      "file": "assets/ui/items/blade.png",
+      "source_file": "assets/source/saltsman-inventory/knife.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "9611e9f63b5d4ed3e3c45ecb476133e1ac15d2414b48490e5d22f2ee78aff3f0",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/vital.png",
+      "source_file": "assets/source/saltsman-inventory/battery.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "191763d9832b240750ecb7cb5b06c0c1cb6249551803ccc6ad7dd39f5e9de28b",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/pulse.png",
+      "source_file": "assets/source/saltsman-inventory/welder.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "56c3b0c7b1ae87afbba9dae6ce125287a2b3118334bbe217f6360af2e9ee4cd2",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/repair.png",
+      "source_file": "assets/source/saltsman-inventory/medkit.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "581f714b6b8b68618ec5d6b2a9c9cce4a1d84d4708bb5174e13f8eaa13aa3569",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/ember.png",
+      "source_file": "assets/source/saltsman-inventory/bunsen.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "5157e66ccb72267cc6f70d4752e73f2421a8a1be3e8121832427f4946290ca8b",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/memory.png",
+      "source_file": "assets/source/saltsman-inventory/tablet.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "8dff33c01a3a7808a4bd4a426cfc4b84a0485e1b98f82facb043e8b82ac6d553",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/burst.png",
+      "source_file": "assets/source/saltsman-inventory/spool.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "a2943c1fa631d4ed0b255771e62c392f93ab5821e278556344973fcb24702194",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/parry.png",
+      "source_file": "assets/source/saltsman-inventory/gasmask.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "5d731efba5f12f2ac95ca4372eb87c357f55f030c163b6761b08815096c7515c",
+      "status": "validated in native item cards, HUD and world pickups"
+    },
+    {
+      "file": "assets/ui/items/beacon.png",
+      "source_file": "assets/source/saltsman-inventory/radio.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "ca725cf8496c08e60700a8fe2665f7050a61960f691221fb3ea2949378550765",
+      "status": "validated in native item cards, HUD and world pickups"
+    }
+  ]
+}

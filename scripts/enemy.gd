@@ -1,5 +1,6 @@
 extends CharacterBody2D
 const VISUAL = preload("res://scripts/enemy_visual.gd")
+const PALETTE = preload("res://scripts/visual_palette.gd")
 var visual: AnimatedSprite2D
 ## The four furnace constructs. All attacks have an explicit warning and recovery.
 
@@ -31,13 +32,13 @@ var phase_pulse: float = 0.0
 var floor_check: float = 0.0
 var safe_to_step: bool = true
 
-const INK: Color = Color("0a1020")
-const ARMOR: Color = Color("253448")
-const EDGE: Color = Color("4b6472")
-const LIGHT: Color = Color("829b9d")
-const FIRE: Color = Color("ff724c")
-const HOT: Color = Color("ffdd8a")
-const RED: Color = Color("ed476f")
+const INK: Color = PALETTE.INK
+const ARMOR: Color = PALETTE.DARK
+const EDGE: Color = PALETTE.EDGE
+const LIGHT: Color = PALETTE.LIGHT
+const FIRE: Color = PALETTE.ORANGE
+const HOT: Color = PALETTE.GOLD
+const RED: Color = PALETTE.DANGER
 
 
 func combat_size() -> Vector2:
@@ -372,8 +373,8 @@ func _sfx(sound_name: String) -> void:
 
 func _draw() -> void:
 	if dead: return
-	var glow: Color = Color("78d8cd") if kind=="sentry" else RED if (kind == "drone" or phase == 2) else FIRE
-	var body: Color = Color("fff1ce") if flash > 0.0 else ARMOR
+	var glow: Color = RED if kind in ["sentry","drone"] or phase == 2 else FIRE
+	var body: Color = PALETTE.PAPER if flash > 0.0 else ARMOR
 	var edge: Color = Color.WHITE if flash > 0.0 else EDGE
 	var warning: bool = mode == "warning"
 	if warning and int(age * 15.0) % 2 == 0:
@@ -412,7 +413,7 @@ func _sentry(delta: float,offset: Vector2) -> void:
 		if timer<=0:
 			for angle: float in [-0.12,0,0.12]:
 				var direction: Vector2 = attack_aim.rotated(angle)
-				game.spawn_projectile(position-Vector2(0,18)+direction*19,direction*195,1,true,Color("78d8cd"))
+				game.spawn_projectile(position-Vector2(0,18)+direction*19,direction*195,1,true,RED)
 			_sfx("shoot")
 			_recover(0.65,1.8)
 			visual.show_attack(0.3)

@@ -53,4 +53,3 @@ static func city_layers(n: CanvasItem, scroll: float, chapter: int, clock: float
 	for i: int in range(30):
 		var p: Vector2 = Vector2(fposmod(i*97-clock*(5+i%4)-scroll*0.2,660)-10, fposmod(i*41+sin(clock+i)*5,330))
 		n.draw_rect(Rect2(p,Vector2(1,1)),Color("f4bc79")*Color(1,1,1,0.4))
-

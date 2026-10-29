@@ -6,6 +6,10 @@ const LABELS = ["左移","右移","跳跃","近战","射击","冲刺","弹反","
 const PAD_NAMES = {"move_left":"左摇杆 ←","move_right":"左摇杆 →","jump":"A","attack":"X","pulse":"Y","dash":"B","parry":"LB","heal":"LT","burst":"RT","interact":"RB","pause_game":"START","local_map":"RS","journal":"BACK"}
 var game: Node
 var pad_active: bool = false
+var touch_active: bool = OS.has_feature("mobile") or "--touch-preview" in OS.get_cmdline_user_args()
+var touch_scale: float = 1.0
+var touch_opacity: float = 0.72
+const TOUCH_NAMES = {"move_left":"左摇杆", "move_right":"左摇杆", "down":"摇杆下拉", "jump":"跳跃", "attack":"连斩", "pulse":"脉冲", "dash":"冲刺", "parry":"弹反", "heal":"修复", "burst":"爆发", "interact":"交互", "local_map":"地图", "journal":"航线", "pause_game":"暂停"}
 var lessons_enabled: bool = true
 var capture_action: String = ""
 var status: String = "选择一项后，按下新的键盘按键。Esc 取消。"
@@ -39,9 +43,17 @@ func setup() -> void:
 
 func prompt(action: String) -> String:
 	if pad_active: return PAD_NAMES.get(action,action)
+	if touch_active: return TOUCH_NAMES.get(action,action)
 	for event: InputEvent in InputMap.action_get_events(action):
 		if event is InputEventKey: return OS.get_keycode_string(event.physical_keycode)
 	return action
+
+func adapt_text(message: String) -> String:
+	if not touch_active or pad_active: return message
+	var result: String = message
+	for pair: Array in [["按 E","点交互"],["按 C","点地图"],["按 R","点爆发"],["C 打开","点地图打开"],["E 补给箱","交互 补给箱"],["E 交互","点交互"],["E 中继站","交互 中继站"],["按住 J","长按连斩"],["J 攻击","连斩攻击"],["按 Q","点弹反"],["按 F","点修复"],["ESC","暂停"]]:
+		result = result.replace(pair[0],pair[1])
+	return result
 
 func observe(event: InputEvent) -> bool:
 	var before: bool = pad_active
@@ -49,6 +61,7 @@ func observe(event: InputEvent) -> bool:
 	elif event is InputEventJoypadMotion and absf(event.axis_value)>0.45: pad_active = true
 	elif event is InputEventKey and event.pressed: pad_active = false
 	elif event is InputEventMouseButton and event.pressed: pad_active = false
+	elif event is InputEventScreenTouch and event.pressed and touch_active: pad_active = false
 	if before!=pad_active:
 		changed.emit()
 		game.stats_changed.emit()
@@ -105,6 +118,8 @@ func save_config() -> void:
 			if event is InputEventKey: keys.append(event.physical_keycode)
 		cfg.set_value("keys",action,keys)
 	cfg.set_value("comfort","lessons",lessons_enabled)
+	cfg.set_value("touch","scale",touch_scale)
+	cfg.set_value("touch","opacity",touch_opacity)
 	DirAccess.make_dir_recursive_absolute(game.director.path(""))
 	cfg.save(game.director.path("controls.cfg"))
 
@@ -112,6 +127,8 @@ func load_config() -> void:
 	var cfg: ConfigFile = ConfigFile.new()
 	if cfg.load(game.director.path("controls.cfg"))!=OK: return
 	lessons_enabled = bool(cfg.get_value("comfort","lessons",true))
+	touch_scale = clampf(float(cfg.get_value("touch","scale",1.0)),0.85,1.15)
+	touch_opacity = clampf(float(cfg.get_value("touch","opacity",0.72)),0.35,0.9)
 	for action: String in ACTIONS:
 		var keys: Array = cfg.get_value("keys",action,[])
 		if keys.is_empty(): continue

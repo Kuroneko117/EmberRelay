@@ -1,10 +1,43 @@
 extends RefCounted
+const P = preload("res://scripts/visual_palette.gd")
 const FONT = preload("res://assets/ui_font.ttc")
-const INK = Color("101e26")
-const PAPER = Color("eee1c7")
-const GOLD = Color("ecb371")
-const TEAL = Color("83c8bc")
-const MUTED = Color("92aaa8")
+const DISPLAY = preload("res://assets/fonts/ZCOOLQingKeHuangYou-Regular.ttf")
+const INK = P.INK
+const PAPER = P.PAPER
+const GOLD = P.GOLD
+const TEAL = P.SIGNAL
+const MUTED = P.LIGHT
+const STEEL = P.STEEL
+const EDGE = P.EDGE
+const ORANGE = P.ORANGE
+
+static func action_skin(state: String="default") -> StyleBoxTexture:
+	var box: StyleBoxTexture = StyleBoxTexture.new()
+	box.texture = load("res://assets/ui/signal/button-"+state+".svg")
+	for side: int in range(4):
+		box.set_texture_margin(side,8)
+		box.set_content_margin(side,13 if side==SIDE_LEFT else 32 if side==SIDE_RIGHT else 5)
+	return box
+
+static func style_action(button: Button) -> void:
+	button.theme_type_variation = "SignalAction"
+	for state: String in ["normal","hover","pressed","disabled"]:
+		button.add_theme_stylebox_override(state,action_skin("default" if state=="normal" else state))
+	button.add_theme_stylebox_override("focus",StyleBoxEmpty.new())
+	button.add_theme_color_override("font_color",PAPER)
+	button.add_theme_color_override("font_focus_color",INK)
+	button.add_theme_color_override("font_hover_color",INK)
+	button.add_theme_color_override("font_pressed_color",PAPER)
+	button.add_theme_color_override("font_hover_pressed_color",PAPER)
+	button.add_theme_color_override("font_disabled_color",EDGE)
+
+static func module_frame(active: bool = false) -> StyleBoxTexture:
+	var box := StyleBoxTexture.new()
+	box.texture = load("res://assets/studio/signal-ui/module-frame-"+("focus" if active else "default")+".svg")
+	for side: int in range(4):
+		box.set_texture_margin(side,8)
+		box.set_content_margin(side,9)
+	return box
 
 static func material(which: String="panel") -> StyleBoxFlat:
 	var box: StyleBoxFlat = StyleBoxFlat.new()

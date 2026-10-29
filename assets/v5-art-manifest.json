@@ -1,0 +1,908 @@
+{
+  "version": "5.0.0",
+  "assets": [
+    {
+      "file": "assets/art/units/scout-idle.png",
+      "family": "scout",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "422d317d0269e7d0a8c91cb2de4903af77c04db9c4813dec8ef6f7e51e86b641",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/scout-move.png",
+      "family": "scout",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "523e5e40a91df0c71748d4abb1ff62620924bbeb73a9c41a84c86b11dc044052",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/scout-attack.png",
+      "family": "scout",
+      "animation": "attack",
+      "frames": 7,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "40b99952dc75d88797ccc4aa52bed97b1406a48a3cb266f09fcd7ae96b9fd366",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/scout-warning.png",
+      "family": "scout",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02CountDown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "02805e4de3e2b9243c01f837b0e072ae88e91d4a0e618d7dfbc510aa6fef5a8c",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/scout-hurt.png",
+      "family": "scout",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "96f41735a7bcda921d9aa6f7b4d2760ac3d7e4558410fcf81dcc62719d92898a",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/scout-death.png",
+      "family": "scout",
+      "animation": "death",
+      "frames": 13,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid02/Png/Droid02Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "bf665675530edac546c43b0d64e4cecffa76302585a1797e5b598b70eaf6c8d0",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-idle.png",
+      "family": "guard",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "f163a3740ac489a0f16d98d0ab028f16e19870f7eb62140507a84c522558907d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-move.png",
+      "family": "guard",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid3Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9b837ea6ff7246b002e88fd69783ecdc202f38e676370b5013d867a1759f5156",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-attack.png",
+      "family": "guard",
+      "animation": "attack",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "6096dce956e3bc0a4e2d6815e76dd27982cc7b761d77b75f4db844d22bc2fb56",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-warning.png",
+      "family": "guard",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Countdown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "03a6d226c9a25072f059fa8684c25522406de4b72d60d94c8e5ca121b472b5c3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-hurt.png",
+      "family": "guard",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "726ab875019579ac071f79f4f985e16245ccda0b1854cb576bab11e3f9622d32",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/guard-death.png",
+      "family": "guard",
+      "animation": "death",
+      "frames": 11,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "1211dcc8b4190414c1e8c33565d238d440bd6d8d50d918c07fd4886bfc081b21",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-idle.png",
+      "family": "sentry",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "ccb5c3f9ddb93fa70be37670666cc142d07ad868f7844fe2566887b7a1c8ac0d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-move.png",
+      "family": "sentry",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid3Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "516fc3266876b8e874c90ba3b2ea52ff0d036f8b036a70fab57bf913c769989b",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-attack.png",
+      "family": "sentry",
+      "animation": "attack",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Attack.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "67e655113dad695d98833d3aa9393e8ccf2c801d71d8db41190e281521b1dbca",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-warning.png",
+      "family": "sentry",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Countdown.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "f50c47dc75b9fbc9fb0c46c39b47e885658ff41dad3d2693e0a8738ea41818b7",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-hurt.png",
+      "family": "sentry",
+      "animation": "hurt",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "5f38267aee11cdcc23fe41205f169e262591d6d944a3d3755b4f8c3d433cfead",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/sentry-death.png",
+      "family": "sentry",
+      "animation": "death",
+      "frames": 11,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid03/Png/Droid03Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "04a48b9fbfd027a4db59d83a80bc97575cee5149f0f740e38978275616518246",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-idle.png",
+      "family": "drone",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "978757d00239f1fcf2c4e5ff3a02005fb4a44f67134bd4e64832aec199a66eb2",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-move.png",
+      "family": "drone",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "97ab3bb2c0022261bd0ae06ac2bf359c1c0f1bfc57dbbebe64c38b48064667f1",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-attack.png",
+      "family": "drone",
+      "animation": "attack",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Shoot.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "7c12e2aa537a4c20e5a72ef8545e63b2db525c09446a93d6581688d104096dea",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-warning.png",
+      "family": "drone",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droind01SelfDestruct.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9bb951c2eec6a5dc71a1eac99c3724454e57e672456b962aba9021b3eb2cff3d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-hurt.png",
+      "family": "drone",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "456f4ca9fefd8a9e5003ab877cdf150829d0205fd78f1492ed8062e50ba31313",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/drone-death.png",
+      "family": "drone",
+      "animation": "death",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "455743c63b9e58698e8720071e2f818532b4ab11ae04588b2a5a5495190178e3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-idle.png",
+      "family": "tempest",
+      "animation": "idle",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Idle.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "978757d00239f1fcf2c4e5ff3a02005fb4a44f67134bd4e64832aec199a66eb2",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-move.png",
+      "family": "tempest",
+      "animation": "move",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Move.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "97ab3bb2c0022261bd0ae06ac2bf359c1c0f1bfc57dbbebe64c38b48064667f1",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-attack.png",
+      "family": "tempest",
+      "animation": "attack",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Shoot.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "7c12e2aa537a4c20e5a72ef8545e63b2db525c09446a93d6581688d104096dea",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-warning.png",
+      "family": "tempest",
+      "animation": "warning",
+      "frames": 4,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droind01SelfDestruct.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "9bb951c2eec6a5dc71a1eac99c3724454e57e672456b962aba9021b3eb2cff3d",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-hurt.png",
+      "family": "tempest",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Hurt.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "456f4ca9fefd8a9e5003ab877cdf150829d0205fd78f1492ed8062e50ba31313",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/tempest-death.png",
+      "family": "tempest",
+      "animation": "death",
+      "frames": 9,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-droids/Foozle_2DC0006_Sci_Fi_Lab_Droids_Pack/Droid01/Png/Droid01Death.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "455743c63b9e58698e8720071e2f818532b4ab11ae04588b2a5a5495190178e3",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-droids",
+      "author": "Baldur / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-idle.png",
+      "family": "boss",
+      "animation": "idle",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss idle-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "48f59c65c100c8bdeac56d8c00b440699003627f7092aeb68f864e9a02b3832e",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-move.png",
+      "family": "boss",
+      "animation": "move",
+      "frames": 8,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss run-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "4c6f7dc467e8d759740692108b49cc4bb07cea7998675ed04a58f955f397f940",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-attack.png",
+      "family": "boss",
+      "animation": "attack",
+      "frames": 19,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss heavy attack-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "688c75b038ff499cf8079e95ce80e6f7a62bca8c5e4cdcf7043ea292880db0e7",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-shot.png",
+      "family": "boss",
+      "animation": "shot",
+      "frames": 12,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss light attack -Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "6c2493dff9b3608fe49b9c4c1a80eac4b970d08268990c8131b73ed80ddb6849",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-warning.png",
+      "family": "boss",
+      "animation": "warning",
+      "frames": 6,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss charge-sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "3c9a884dcafe170c3104e75a60720351676f3ded37c0474cf20afef9871fae2b",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-hurt.png",
+      "family": "boss",
+      "animation": "hurt",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss animation hurt-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "0796d2a4a39308f18f09ddce31717f8c6e4111441a4c7d8e00c11f3ad275e984",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-death.png",
+      "family": "boss",
+      "animation": "death",
+      "frames": 14,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss animation death-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "e5baf8e0305a3cff1ec506afa08dd74f3ba30edcb2af64272723c32b0d45f6e9",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-rise.png",
+      "family": "boss",
+      "animation": "rise",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss flying up -Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "272de14d0e2a0d0dd6e498e54df09346e9c2bd26868f7af792bc4c14a7996ab4",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/art/units/boss-fall.png",
+      "family": "boss",
+      "animation": "fall",
+      "frames": 3,
+      "cell": [
+        80,
+        80
+      ],
+      "pivot": [
+        40.0,
+        64
+      ],
+      "fps": 10,
+      "source_file": "assets/source/foozle-mecha/Foozle_2DC0008_Sci_Fi_Lab_Mecha_Boss_Plus_Drone/mecha_boss/mecha boss falling-Sheet.png",
+      "license": "CC0-1.0",
+      "changes": "Fixed foot anchor with 16px debris/exhaust clearance, normalized canvas, optional mirror, steel/copper/teal palette",
+      "sha256": "b5a51c954b86a29eb66f0c0a6d04c2a5198e00cdfe95d380fafc7aec410b75a9",
+      "source": "https://foozlecc.itch.io/sci-fi-lab-mecha-boss",
+      "author": "aimen23b / Foozle"
+    },
+    {
+      "file": "assets/ui/panel.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "24c8db144dc8fb7727f7d12ff5cce9dc59a54cf4ffba968dfdacc59c322948b4"
+    },
+    {
+      "file": "assets/ui/button.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/button_square_header_small_rectangle.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        96,
+        32
+      ],
+      "sha256": "97d0ab582264798051598bc9167345dc6ddfec4d524f5e0b1e855a8b30cac524"
+    },
+    {
+      "file": "assets/ui/button-active.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/button_square_header_small_rectangle.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        96,
+        32
+      ],
+      "sha256": "281ce80aca8f94577dab83543289d920aac31be34fb5fd595b243a1ad2805ef4"
+    },
+    {
+      "file": "assets/ui/slot.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large_square.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        12,
+        12
+      ],
+      "sha256": "5d0c7a7c6a1b42f0b8a39098142321ff065fa166471360194c08030891217b66"
+    },
+    {
+      "file": "assets/ui/bar-track.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "4d1882f7fbb3e5e9100c4d841a03fc28db4532a991719052a4b130e1ba1a1505"
+    },
+    {
+      "file": "assets/ui/bar-fill.png",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/ui-pack-sci-fi",
+      "source_file": "Grey/Default/bar_square_large.png",
+      "license": "CC0-1.0",
+      "changes": "Nearest-neighbor half size; dark steel and amber palette",
+      "size": [
+        48,
+        12
+      ],
+      "sha256": "63a450b93e7e260fdb4501fc90b736b7c9fd82c617e9f6f95b8c1b0bed29c85e"
+    },
+    {
+      "file": "assets/ui/*.svg",
+      "author": "Ember Relay project",
+      "license": "Project-original",
+      "changes": "Simple functional vector symbols"
+    }
+  ]
+}

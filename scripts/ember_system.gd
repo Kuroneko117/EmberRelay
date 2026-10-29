@@ -1,7 +1,8 @@
 extends Node2D
 ## Fire is earned through play, then spent either on a burst or an optional relay.
-const GOLD = Color("efb473")
-const TEAL = Color("79d8cc")
+const PALETTE = preload("res://scripts/visual_palette.gd")
+const GOLD = PALETTE.GOLD
+const TEAL = PALETTE.SIGNAL
 const FONT = preload("res://assets/ui_font.ttc")
 const CORE = preload("res://assets/ui/items/burst.png")
 const BOX = preload("res://assets/art/water-control-box-1.png")
@@ -175,11 +176,11 @@ func _draw() -> void:
 	# Both components come from the existing industrial / inventory art families.
 	draw_texture_rect(BOX,Rect2(pos-Vector2(15,20),Vector2(30,20)),false,Color("b0c5bb"))
 	draw_line(pos-Vector2(0,20),pos-Vector2(0,31),col,2)
-	draw_texture_rect(CORE,Rect2(pos-Vector2(10,48+sin(age*2)*2),Vector2(20,20)),false)
-	draw_circle(pos-Vector2(0,36),14,Color(col,0.07))
+	draw_texture_rect(CORE,Rect2(pos-Vector2(8,40),Vector2(16,16)),false)
+	# No perpetual bloom around every optional station.
 	var near: bool = game.player.position.distance_to(pos)<65
 	if near:
-		var caption: String = "%s 更换装配 · 免费"%game.controls.prompt("interact") if on else "%s 点燃中继 · 60 / %d"%[game.controls.prompt("interact"),int(game.director.focus)]
+		var caption: String = "%s 更换装配 · 免费"%game.controls.prompt("interact") if on else "%s 检修 · 60 / %d 共鸣"%[game.controls.prompt("interact"),int(game.director.focus)]
 		draw_rect(Rect2(pos-Vector2(88,77),Vector2(176,19)),Color("0b1b23"))
 		draw_string(FONT,pos-Vector2(82,64),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,9,col)
 	else:

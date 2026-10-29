@@ -3,9 +3,10 @@ extends CharacterBody2D
 const VISUAL = preload("res://scripts/enemy_visual.gd")
 var visual: AnimatedSprite2D
 var satellites: Array[AnimatedSprite2D] = []
-const TEAL = Color("70dfd9")
-const GOLD = Color("f5c384")
-const RED = Color("ed6d83")
+const PALETTE = preload("res://scripts/visual_palette.gd")
+const TEAL = PALETTE.SIGNAL
+const GOLD = PALETTE.GOLD
+const RED = PALETTE.DANGER
 var game: Node
 var kind: String = "tempest"
 var max_health: float = 176

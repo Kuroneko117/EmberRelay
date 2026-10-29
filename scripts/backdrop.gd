@@ -20,7 +20,7 @@ func _draw_new_landscape() -> void:
 	if game.chapter>=3 and game.state!="menu":
 		_draw_water_sky()
 		return
-	var chapter: int = game.chapter%3
+	var chapter: int = 0 if game.state=="menu" else game.chapter%3
 	var scroll: float = game.camera.position.x-320 if game.state!="menu" else clock*4
 	var ink: Color = [Color("182330"),Color("122833"),Color("291e2c")][chapter]
 	draw_rect(Rect2(0,0,640,360),ink)
@@ -49,7 +49,8 @@ func _draw_new_landscape() -> void:
 	# A distant aerial tram and its cable break up the repeating city silhouette.
 	var cable_y: float = 117 if chapter==0 else 90
 	draw_line(Vector2(0,cable_y),Vector2(640,cable_y+38),Color("26303b"),1)
-	var tram: Vector2 = Vector2(fposmod(clock*7-scroll*0.12+330,800)-80,cable_y+20)
+	var tram_start: float = 480 if game.state=="menu" else 330
+	var tram: Vector2 = Vector2(fposmod(clock*7-scroll*0.12+tram_start,800)-80,cable_y+20)
 	draw_line(tram-Vector2(0,8),tram+Vector2(0,15),Color("303d47"),2)
 	draw_style_box(_tram_style(),Rect2(tram+Vector2(-15,13),Vector2(30,19)))
 	for i: int in range(3): draw_rect(Rect2(tram+Vector2(-11+i*8,17),Vector2(5,6)),Color("bba27b"))

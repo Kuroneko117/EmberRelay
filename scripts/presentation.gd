@@ -22,9 +22,19 @@ var mechanism: Vector2
 var finale: float = 0
 var explosions: Array[Dictionary] = []
 var relays: Array[Dictionary] = []
+var pump_landmark: Sprite2D
 
 func _ready() -> void:
 	z_index = 15
+	pump_landmark = Sprite2D.new()
+	pump_landmark.name = "PumpLandmark"
+	pump_landmark.texture = preload("res://assets/studio/pump-relay.png")
+	pump_landmark.centered = false
+	pump_landmark.position = Vector2(423,188)
+	pump_landmark.z_index = -10 # Absolute world layer 5, behind the courier at 12.
+	pump_landmark.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pump_landmark.visible = false
+	add_child(pump_landmark)
 
 func configure() -> void:
 	crates.clear()
@@ -56,7 +66,7 @@ func configure() -> void:
 	lift.position = Vector2(393,300) if game.chapter==0 else Vector2(582,300)
 	lift_shape.disabled = game.chapter!=0
 	for x: float in [[205,605,810,1305,1740,2180],[170,370,710,1260,1690,2230],[205,710,1120,1390]][game.chapter%3]:
-		crates.append({"pos":Vector2(x,300),"hp":2,"broken":false})
+		if game.chapter!=1 or x not in [170.0,370.0,710.0]: crates.append({"pos":Vector2(x,300),"hp":2,"broken":false})
 	var quotes: Array = [
 		["末班车停在了这里。有人把车票折成了纸鸟。","留给下一位旅人：灯塔还亮着，请不要放弃。"],
 		["雨水会带走锈迹，带不走曾经在这里生活的人。","管廊第 7 号记录：把光送出去，比守住它更重要。"],
@@ -71,7 +81,7 @@ func configure() -> void:
 			var grounded: bool = false
 			for floor_rect: Rect2 in game.platforms:
 				if floor_rect.size.y>30 and x>floor_rect.position.x+20 and x<floor_rect.end.x-20: grounded = true
-			if grounded: crates.append({"pos":Vector2(x,300),"hp":2,"broken":false})
+			if grounded: if game.chapter!=1 or x not in [170.0,370.0,710.0]: crates.append({"pos":Vector2(x,300),"hp":2,"broken":false})
 		mechanism = Vector2(490,300) if game.chapter==3 else Vector2(1120,213) if game.chapter==4 else Vector2(2570,300)
 		if game.chapter==3:
 			lift_shape.shape.size = Vector2(125,10)
@@ -88,6 +98,8 @@ func configure() -> void:
 
 func _process(delta: float) -> void:
 	time += delta
+	pump_landmark.visible = game.chapter==1 and game.state!="menu" and is_instance_valid(game.player)
+	pump_landmark.modulate = Color.WHITE if circuit_on else Color("637e80")
 	if game.state=="playing":
 		finale = maxf(0,finale-delta)
 		sector_title = maxf(0,sector_title-delta)
@@ -114,6 +126,7 @@ func tick(_delta: float) -> void:
 				nearest = game.player.position.distance_to(relay.pos)
 				mechanism = relay.pos
 	if game.player.position.distance_to(mechanism)<55 and _mechanism_is_closest() and Input.is_action_just_pressed("interact"):
+		if game.chapter==1 and circuit_on: return
 		if game.chapter>=3:
 			_activate_new_mechanism()
 		elif game.chapter==0:
@@ -124,7 +137,7 @@ func tick(_delta: float) -> void:
 			circuit_on = true
 			if game.chapter==1:
 				lift_shape.set_deferred("disabled",false)
-				game.director.say("水力桥已通电。青色步道连接了两岸。继续向灯塔前进。")
+				game.director.say("七号泵房复电。水力桥已升起，向东继续投递。")
 			else:
 				game.director.focus = minf(100,game.director.focus+30)
 				game.director.say("备用核心已释放，余烬蓄能补充。信使，接下来就交给你了。")
@@ -235,6 +248,15 @@ func _draw_mechanism() -> void:
 			ART.tile_strip(self,Rect2(0,0,64,16),Vector2(530,300),104,12,Color("a4ddd1"))
 			draw_line(Vector2(534,300),Vector2(628,300),Color("b5f1d8"),2)
 			for i: int in range(10): draw_rect(Rect2(534+i*10,288,1,12),Color("54766f"))
+	if game.chapter==1:
+		# This pipe and the inspection lamp reflect the actual saved circuit, never an inferred reward.
+		draw_line(Vector2(500,284),Vector2(536,284),Color("78c6b4") if circuit_on else Color("3d555e"),2)
+		draw_rect(Rect2(514,257,4,6),Color("bbe8cc") if circuit_on else Color("233942"))
+		if game.player.position.distance_to(mechanism)<62 and _mechanism_is_closest():
+			var label: String = "水力桥已通电" if circuit_on else game.controls.prompt("interact")+" 恢复泵房供电"
+			draw_rect(Rect2(433,165,124,19),Color("0c171e"))
+			draw_string(FONT,Vector2(439,179),label,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("eee1c6"))
+		return
 	# The machine is recognizable before its text prompt appears.
 	var p: Vector2 = mechanism-Vector2(36,0)
 	draw_texture_rect(preload("res://assets/art/water-control-box-1.png"),Rect2(p-Vector2(16,21),Vector2(32,21)),false,Color("a4bcb4"))

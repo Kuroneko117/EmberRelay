@@ -1,0 +1,130 @@
+{
+  "assets": [
+    {
+      "file": "assets/ui/items/blade.png",
+      "source_file": "assets/source/saltsman-inventory/knife.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "9611e9f63b5d4ed3e3c45ecb476133e1ac15d2414b48490e5d22f2ee78aff3f0",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/vital.png",
+      "source_file": "assets/source/saltsman-inventory/battery.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "191763d9832b240750ecb7cb5b06c0c1cb6249551803ccc6ad7dd39f5e9de28b",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/pulse.png",
+      "source_file": "assets/source/saltsman-inventory/welder.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "56c3b0c7b1ae87afbba9dae6ce125287a2b3118334bbe217f6360af2e9ee4cd2",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/repair.png",
+      "source_file": "assets/source/saltsman-inventory/medkit.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "581f714b6b8b68618ec5d6b2a9c9cce4a1d84d4708bb5174e13f8eaa13aa3569",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/ember.png",
+      "source_file": "assets/source/saltsman-inventory/bunsen.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "5157e66ccb72267cc6f70d4752e73f2421a8a1be3e8121832427f4946290ca8b",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/memory.png",
+      "source_file": "assets/source/saltsman-inventory/tablet.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "8dff33c01a3a7808a4bd4a426cfc4b84a0485e1b98f82facb043e8b82ac6d553",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/burst.png",
+      "source_file": "assets/source/saltsman-inventory/spool.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "a2943c1fa631d4ed0b255771e62c392f93ab5821e278556344973fcb24702194",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/parry.png",
+      "source_file": "assets/source/saltsman-inventory/gasmask.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "5d731efba5f12f2ac95ca4372eb87c357f55f030c163b6761b08815096c7515c",
+      "status": "pending in-engine validation"
+    },
+    {
+      "file": "assets/ui/items/beacon.png",
+      "source_file": "assets/source/saltsman-inventory/radio.png",
+      "size": [
+        24,
+        24
+      ],
+      "author": "Adam Saltsman",
+      "source": "https://adamatomic.itch.io/sci-fi-inventory",
+      "license": "Public domain (artist release statement)",
+      "changes": "Palette mapped to steel, copper and teal; centered on transparent 24x24 canvas. Original pixel clusters preserved.",
+      "sha256": "ca725cf8496c08e60700a8fe2665f7050a61960f691221fb3ea2949378550765",
+      "status": "pending in-engine validation"
+    }
+  ]
+}

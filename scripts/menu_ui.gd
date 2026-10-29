@@ -91,4 +91,3 @@ func _focus_first() -> void:
 	if not is_inside_tree() or not visible or stack.get_child_count()==0: return
 	var first: Control = stack.get_child(0)
 	if first.is_inside_tree() and not first.is_queued_for_deletion(): first.grab_focus()
-

@@ -3,11 +3,12 @@ extends Node2D
 const COURIER = preload("res://scripts/courier_art.gd")
 const ART = preload("res://scripts/art.gd")
 const FONT = preload("res://assets/ui_font.ttc")
-const CREAM = Color("eee5cd")
-const AMBER = Color("f4ad68")
-const TEAL = Color("79d8cc")
-const MUTED = Color("96a8a8")
-const DARK = Color("14232c")
+const PALETTE = preload("res://scripts/visual_palette.gd")
+const CREAM = PALETTE.PAPER
+const AMBER = PALETTE.GOLD
+const TEAL = PALETTE.SIGNAL
+const MUTED = PALETTE.LIGHT
+const DARK = PALETTE.DEEP
 var game: Node
 
 
@@ -66,14 +67,8 @@ func _menu() -> void:
 	ART.tile_strip(self,Rect2(288,0,64,16),Vector2(342,335),298,28,Color("7a837f"))
 	var bob: float = sin(game.clock*1.8)*0.8
 	var hero: Vector2 = Vector2(464,306+bob)
-	draw_set_transform(hero,0,Vector2(3.4,3.4))
-	var wave: float = sin(game.clock*3)*2
-	draw_colored_polygon(PackedVector2Array([Vector2(-4,-29),Vector2(-25,-32+wave),Vector2(-32,-29+wave),Vector2(-17,-25),Vector2(-4,-26)]),Color("c6764d"))
-	draw_line(Vector2(-26,-30+wave),Vector2(-6,-29),Color("f4b375"),1)
+	draw_set_transform(hero,0,Vector2(3.0,3.0))
 	COURIER.draw_pose(self,"idle",int(game.clock*5))
-	draw_rect(Rect2(-9,-26,4,11),Color("3f4644"))
-	draw_rect(Rect2(-8,-24,2,6),Color("ffc477"))
-	draw_line(Vector2(6,-19),Vector2(17,-2),Color("91dcd1"),1)
 	draw_set_transform(Vector2.ZERO)
 	# A broken signal tower suggests the destination before the journey begins.
 	ART.stamp(self,Rect2(272,0,16,64),Rect2(577,146,15,160),Color("afafa1"))

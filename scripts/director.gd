@@ -1,8 +1,9 @@
 extends Node2D
 ## Encounter direction, combat rewards, campaign persistence and environmental life.
-const TEAL = Color("79e1cd")
-const AMBER = Color("ffbd77")
-const RED = Color("ef6b70")
+const PALETTE = preload("res://scripts/visual_palette.gd")
+const TEAL = PALETTE.SIGNAL
+const AMBER = PALETTE.GOLD
+const RED = PALETTE.DANGER
 const FONT = preload("res://assets/ui_font.ttc")
 var game: Node
 var combo: int = 0:
@@ -409,9 +410,9 @@ func _draw() -> void:
 		if not chest.open:
 			draw_circle(p-Vector2(0,9),22,Color(1,0.7,0.3,0.035))
 			if p.distance_to(game.player.position)<45:
-				draw_string(FONT,p-Vector2(28,25),"E  补给箱",HORIZONTAL_ALIGNMENT_LEFT,-1,10,AMBER)
+				draw_string(FONT,p-Vector2(28,25),game.controls.prompt("interact")+" 补给箱",HORIZONTAL_ALIGNMENT_LEFT,-1,10,AMBER)
 	if game.checkpoint_active and absf(game.player.position.x-game.checkpoint_x)<45 and active_arena<0:
-		draw_string(FONT,Vector2(game.checkpoint_x-31,239),"E  修复工坊",HORIZONTAL_ALIGNMENT_LEFT,-1,10,TEAL)
+		draw_string(FONT,Vector2(game.checkpoint_x-31,239),game.controls.prompt("interact")+" 修复工坊",HORIZONTAL_ALIGNMENT_LEFT,-1,10,TEAL)
 	for ring_data: Dictionary in rings:
 		var t: float = ring_data.life/0.55
 		draw_arc(ring_data.pos,ring_data.radius*(1-t)+3,0,TAU,48,Color(ring_data.color,t),2+t*3)

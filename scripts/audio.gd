@@ -254,4 +254,3 @@ func _build_effect(sound_name: String, duration: float, first_frequency: float, 
 			tone = tone * 0.65 + sin(phase * 0.502) * 0.35
 		samples[index] = (tone * (1.0 - noise_amount) + filtered_noise * noise_amount) * envelope * gain
 	return _make_stream(samples)
-

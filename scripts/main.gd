@@ -11,9 +11,10 @@ const SceneryScript = preload("res://scripts/scenery.gd")
 const PresentationScript = preload("res://scripts/presentation.gd")
 const AudioScript = preload("res://scripts/audio.gd")
 const FONT = preload("res://assets/ui_font.ttc")
-const AMBER = Color("f4ad68")
-const TEAL = Color("79d8cc")
-const CREAM = Color("eee5cd")
+const PALETTE = preload("res://scripts/visual_palette.gd")
+const AMBER = PALETTE.GOLD
+const TEAL = PALETTE.SIGNAL
+const CREAM = PALETTE.PAPER
 
 var campaign: Node2D
 var director: Node2D
@@ -23,6 +24,7 @@ var menu_ui: Control
 var guide: RefCounted
 var flame: Node2D
 var controls: Node
+var touch_controls: Control
 var hit_pause: float = 0.0
 var ui_focus: int = 0
 signal stats_changed
@@ -43,6 +45,7 @@ var chapter_codes: Array[String] = ["THE ASHEN OUTPOST", "THE RAINWORN CONDUIT",
 var world: Node2D
 var player: CharacterBody2D
 var camera: Camera2D
+var combat_fx: Node2D
 var hud: Node2D
 var audio: Node
 var backdrop: Node2D
@@ -121,6 +124,8 @@ var test_mode: bool = false
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
+	if "--touch-preview" in OS.get_cmdline_user_args() and not OS.has_feature("mobile"):
+		Input.emulate_touch_from_mouse = true # Desktop acceptance: one pointer only.
 	_setup_input()
 	_load_record()
 	audio = AudioScript.new()
@@ -133,6 +138,9 @@ func _ready() -> void:
 	sky_layer.add_child(backdrop)
 	world = Node2D.new()
 	add_child(world)
+	combat_fx = preload("res://scripts/combat_fx.gd").new()
+	combat_fx.game = self
+	add_child(combat_fx)
 	camera = Camera2D.new()
 	camera.position = Vector2(320, 180)
 	camera.position_smoothing_enabled = false
@@ -155,6 +163,12 @@ func _ready() -> void:
 	controls.game = self
 	add_child(controls)
 	controls.setup()
+	var touch_layer: CanvasLayer = CanvasLayer.new()
+	touch_layer.layer = 20
+	add_child(touch_layer)
+	touch_controls = preload("res://scripts/touch_controls.gd").new()
+	touch_controls.game = self
+	touch_layer.add_child(touch_controls)
 	flame = preload("res://scripts/ember_system.gd").new()
 	flame.game = self
 	add_child(flame)
@@ -197,12 +211,14 @@ func _setup_input() -> void:
 			var event: InputEventKey = InputEventKey.new()
 			event.physical_keycode = key
 			InputMap.action_add_event(action, event)
-	var left: InputEventMouseButton = InputEventMouseButton.new()
-	left.button_index = MOUSE_BUTTON_LEFT
-	InputMap.action_add_event("attack", left)
-	var right: InputEventMouseButton = InputEventMouseButton.new()
-	right.button_index = MOUSE_BUTTON_RIGHT
-	InputMap.action_add_event("pulse", right)
+	# Android touch emulates a mouse for native GUI, but must never hold global fire.
+	if not (OS.has_feature("mobile") or "--touch-preview" in OS.get_cmdline_user_args()):
+		var left: InputEventMouseButton = InputEventMouseButton.new()
+		left.button_index = MOUSE_BUTTON_LEFT
+		InputMap.action_add_event("attack", left)
+		var right: InputEventMouseButton = InputEventMouseButton.new()
+		right.button_index = MOUSE_BUTTON_RIGHT
+		InputMap.action_add_event("pulse", right)
 
 func _build_menu_scene() -> void:
 	platforms = [Rect2(-30, 300, 720, 90), Rect2(363, 275, 192, 25)]
@@ -232,7 +248,18 @@ func start_game() -> void:
 	campaign.map_return = "menu"
 	ui_focus = 0
 
+func start_route_preview() -> void:
+	start_game()
+	chapter = 1
+	flame.mark("move")
+	_load_chapter()
+	presentation.sector_title = 0
+	dismiss_messages()
+	player.invulnerable = 1.2
+	state = "playing"
+
 func _clear_world() -> void:
+	if is_instance_valid(combat_fx): combat_fx.clear_all()
 	for child: Node in world.get_children():
 		world.remove_child(child)
 		child.queue_free()
@@ -325,7 +352,8 @@ func _load_chapter() -> void:
 		boss = _spawn_enemy("boss", Vector2(1850,290))
 	for rect: Rect2 in platforms:
 		if rect.size.y < 30:
-			for i: int in range(3):
+			if chapter==1 and rect.position.x not in [380.0,1270.0,1900.0]: continue
+			for i: int in range(2 if chapter==1 else 3):
 				_add_pickup(rect.position + Vector2(22 + i * 25, -18), "ember")
 	var relic_positions: Array[Vector2]
 	if chapter>=3:
@@ -470,12 +498,61 @@ func player_melee(area: Rect2, damage: int, knock: Vector2, combo: int) -> void:
 			hit = true
 	if hit:
 		flame.mark("hit")
+		hit_pause = maxf(hit_pause,0.055 if combo==3 else 0.035)
 		if combo==3 and flame.module==1: flame.gain(10)
 		add_shake(2.5 if combo<3 else 4.0)
 		player.energy = minf(100,player.energy+2)
 
 func spawn_projectile(origin: Vector2, velocity: Vector2, damage: int, hostile: bool, color: Color) -> void:
 	projectiles.append({"pos":origin,"prev":origin,"vel":velocity,"damage":damage if hostile else damage*(1+0.12*mini(2,pulse_bonus)),"hostile":hostile,"color":color,"life":3.5})
+
+func _segment_rect(from: Vector2,to: Vector2,rect: Rect2) -> float:
+	var delta: Vector2 = to-from
+	var low: float = 0
+	var high: float = 1
+	for axis: int in range(2):
+		if absf(delta[axis])<0.00001:
+			if from[axis]<rect.position[axis] or from[axis]>rect.end[axis]: return -1
+		else:
+			var enter: float = (rect.position[axis]-from[axis])/delta[axis]
+			var leave: float = (rect.end[axis]-from[axis])/delta[axis]
+			low = maxf(low,minf(enter,leave)); high = minf(high,maxf(enter,leave))
+			if low>high: return -1
+	return low
+
+func trace_player_pulse(from: Vector2,to: Vector2) -> Dictionary:
+	var result: Dictionary = {}
+	var best: float = 2
+	var query: PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.create(from,to,1)
+	query.hit_from_inside = true
+	var wall: Dictionary = get_world_2d().direct_space_state.intersect_ray(query)
+	if not wall.is_empty():
+		best = from.distance_to(wall.position)/maxf(0.001,from.distance_to(to))
+		result = {"pos":wall.position,"enemy":null}
+	for enemy: Node in enemies.duplicate():
+		if not is_instance_valid(enemy) or enemy.dead: continue
+		var size: Vector2 = enemy.combat_size()
+		var fraction: float = _segment_rect(from,to,Rect2(enemy.position-Vector2(size.x*0.5,size.y),size).grow(4))
+		if fraction>=0 and fraction<best:
+			best = fraction
+			result = {"pos":from.lerp(to,fraction),"enemy":enemy}
+	return result
+
+func apply_pulse_contact(contact: Dictionary,damage: float,velocity: Vector2) -> void:
+	combat_fx.impact(contact.pos)
+	var enemy: Node = contact.enemy
+	if is_instance_valid(enemy) and not enemy.dead:
+		enemy.hurt(damage,Vector2(signf(velocity.x)*170,-60))
+		director.hit()
+		floating_number(enemy.position+Vector2(0,-38),str(damage),TEAL)
+
+func launch_player_pulse(body: Vector2,muzzle: Vector2,velocity: Vector2,damage: int,color: Color) -> Vector2:
+	var contact: Dictionary = trace_player_pulse(body,muzzle)
+	if not contact.is_empty():
+		apply_pulse_contact(contact,damage*(1+0.12*mini(2,pulse_bonus)),velocity)
+		return contact.pos
+	spawn_projectile(muzzle,velocity,damage,false,color)
+	return muzzle
 
 func _update_projectiles(delta: float) -> void:
 	for i: int in range(projectiles.size()-1,-1,-1):
@@ -502,18 +579,11 @@ func _update_projectiles(delta: float) -> void:
 					# Death clears the projectile array while this update is running.
 					if state!="playing": return
 					remove = true
-		elif not remove:
-			for enemy: Node in enemies.duplicate():
-				if not is_instance_valid(enemy) or enemy.dead:
-					continue
-				var size: Vector2 = enemy.combat_size()
-				if Rect2(enemy.position-Vector2(size.x*0.5,size.y),size).grow(4).has_point(p.pos):
-					enemy.hurt(p.damage,Vector2(signf(p.vel.x)*170,-60))
-					director.hit()
-					presentation.impact(p.pos,false)
-					floating_number(enemy.position+Vector2(0,-38),str(p.damage),TEAL)
-					remove = true
-					break
+		elif not p.hostile:
+			var collision: Dictionary = trace_player_pulse(p.prev,p.pos)
+			if not collision.is_empty():
+				apply_pulse_contact(collision,p.damage,p.vel)
+				remove = true
 		# Defeating a boss clears every projectile, including the current one.
 		if projectiles.is_empty(): return
 		if remove:
@@ -576,11 +646,14 @@ func on_player_hurt() -> void:
 	add_shake(4)
 
 func on_player_died() -> void:
+	projectiles.clear()
+	combat_fx.clear_all()
 	state = "dead"
 	deaths += 1
 	camera.offset = Vector2.ZERO
 
 func respawn() -> void:
+	combat_fx.clear_all()
 	flame.charged = 0
 	flame.hover = 0
 	flame.air_spent = false
@@ -639,6 +712,12 @@ func return_to_menu() -> void:
 	_build_menu_scene()
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(touch_controls) and touch_controls.handle_event(event):
+		if is_instance_valid(controls): controls.observe(event)
+		get_viewport().set_input_as_handled()
+		return
+	if is_instance_valid(controls) and controls.touch_active and event is InputEventMouseButton and event.device==InputEvent.DEVICE_ID_EMULATION:
+		return # Native GUI still receives the event; gameplay bindings are excluded above.
 	if is_instance_valid(controls) and controls.observe(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -670,6 +749,8 @@ func _input(event: InputEvent) -> void:
 	# Keep the attack event available to the player after removing the message.
 	if state=="playing" and (event.is_action_pressed("attack") or event.is_action_pressed("pulse")):
 		dismiss_messages()
+		if event.is_action_pressed("attack") and is_instance_valid(player): player.buffer_attack()
+		if event.is_action_pressed("pulse") and is_instance_valid(player): player.buffer_pulse()
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode==KEY_F11:
 			var full: bool = DisplayServer.window_get_mode()==DisplayServer.WINDOW_MODE_FULLSCREEN
@@ -696,6 +777,27 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed("local_map") and state=="playing":
 			campaign.action("local_map")
 			get_viewport().set_input_as_handled()
+
+func mobile_action(action: String) -> void:
+	if action=="pause_game" and state in ["playing","boss_intro"]:
+		state = "paused"
+	elif action=="local_map" and state=="playing":
+		campaign.action("local_map")
+	elif state=="playing" and action in ["attack","pulse"]:
+		dismiss_messages()
+		if is_instance_valid(player):
+			if action=="attack": player.buffer_attack()
+			else: player.buffer_pulse()
+
+func mobile_back() -> void:
+	if is_instance_valid(touch_controls): touch_controls.release_all()
+	if state in ["playing","boss_intro"]:
+		state = "paused"
+	elif is_instance_valid(menu_ui):
+		var back: InputEventKey = InputEventKey.new()
+		back.pressed = true
+		back.physical_keycode = KEY_ESCAPE
+		menu_ui.consume_shortcut(back)
 
 func dismiss_messages() -> void:
 	notice_timer = 0
@@ -774,9 +876,9 @@ func add_shake(amount: float) -> void:
 	shake = maxf(shake,amount)
 
 func show_notice(value: String) -> void:
-	notice = value
+	notice = controls.adapt_text(value) if is_instance_valid(controls) else value
 	notice_timer = 4
-	notice_shown.emit(value)
+	notice_shown.emit(notice)
 
 func _load_record() -> void:
 	var cfg: ConfigFile = ConfigFile.new()
@@ -834,6 +936,7 @@ func _draw() -> void:
 			draw_circle(pos,10,Color(0.4,0.9,0.85,0.06))
 			draw_texture_rect(preload("res://assets/ui/items/repair.png"),Rect2((pos-Vector2(12,12)).round(),Vector2(24,24)),false)
 	for p: Dictionary in projectiles:
+		if not p.hostile: continue # Friendly shots are rendered once, on combat layer16.
 		var direction: Vector2 = p.vel.normalized()
 		draw_line(p.pos-direction*12,p.pos,p.color,3)
 		draw_circle(p.pos,3,CREAM if not p.hostile else Color("ffe0bd"))
@@ -996,9 +1099,15 @@ func _smoke_test() -> void:
 	get_tree().quit()
 
 func _notification(what: int) -> void:
+	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT,NOTIFICATION_APPLICATION_PAUSED]:
+		if is_instance_valid(touch_controls): touch_controls.release_all()
 	if not is_instance_valid(director): return
-	if what==NOTIFICATION_WM_CLOSE_REQUEST:
+	if what==NOTIFICATION_APPLICATION_PAUSED and controls.touch_active:
+		director.save_campaign()
+	if what==NOTIFICATION_WM_GO_BACK_REQUEST:
+		mobile_back()
+	elif what==NOTIFICATION_WM_CLOSE_REQUEST:
 		director.save_campaign()
 		get_tree().quit()
-	elif what==NOTIFICATION_APPLICATION_FOCUS_OUT and state=="playing" and not test_mode:
+	elif what in [NOTIFICATION_APPLICATION_FOCUS_OUT,NOTIFICATION_APPLICATION_PAUSED] and state=="playing" and not test_mode:
 		state = "paused"
